@@ -2206,6 +2206,264 @@ if ( function_exists( 'wc_update_product_lookup_tables' ) ) {
 	wp_schedule_single_event( time() + 5, 'wc_update_product_lookup_tables' );
 }
 
+/* --------------------------------------------------------------------------
+ * 6. Global WooCommerce attributes for Helix sync
+ *
+ * Registers pa_skin-types, pa_concerns-targeted, pa_key-ingredients and
+ * pa_step as WooCommerce global attributes with pre-populated terms, then
+ * assigns realistic values to every demo product using WC_Product_Attribute
+ * objects so WooCommerce recognises them as proper taxonomy attributes.
+ *
+ * Idempotent: skips attributes / terms / products that already have values.
+ * ------------------------------------------------------------------------ */
+
+$glow_helix_attrs = array(
+	'skin-types' => array(
+		'label' => 'Skin Types',
+		'terms' => array(
+			'oily'        => 'Oily',
+			'dry'         => 'Dry',
+			'combination' => 'Combination',
+			'sensitive'   => 'Sensitive',
+			'normal'      => 'Normal',
+			'all'         => 'All',
+		),
+	),
+	'concerns-targeted' => array(
+		'label' => 'Concerns Targeted',
+		'terms' => array(
+			'acne'        => 'Acne',
+			'aging'       => 'Aging',
+			'brightening' => 'Brightening',
+			'hydration'   => 'Hydration',
+			'pores'       => 'Pores',
+			'redness'     => 'Redness',
+			'texture'     => 'Texture',
+		),
+	),
+	'key-ingredients' => array(
+		'label' => 'Key Ingredients',
+		'terms' => array(
+			'niacinamide'       => 'Niacinamide',
+			'hyaluronic-acid'   => 'Hyaluronic Acid',
+			'retinol'           => 'Retinol',
+			'vitamin-c'         => 'Vitamin C',
+			'centella-asiatica' => 'Centella Asiatica',
+			'snail-mucin'       => 'Snail Mucin',
+			'ceramide'          => 'Ceramide',
+			'aha'               => 'AHA',
+			'bha'               => 'BHA',
+			'peptides'          => 'Peptides',
+		),
+	),
+	'step' => array(
+		'label' => 'Routine Step',
+		'terms' => array(
+			'cleanse'    => 'Cleanse',
+			'tone'       => 'Tone',
+			'treat'      => 'Treat',
+			'moisturize' => 'Moisturize',
+			'protect'    => 'Protect',
+			'mask'       => 'Mask',
+		),
+	),
+);
+
+// ── Step A: register attributes and pre-populate terms ────────────────────
+
+$glow_helix_attr_ids = array();
+
+foreach ( $glow_helix_attrs as $attr_name => $attr_cfg ) {
+	$taxonomy = 'pa_' . $attr_name;
+
+	// Find existing attribute ID.
+	$attr_id    = 0;
+	$registered = wc_get_attribute_taxonomies();
+	foreach ( $registered as $tax ) {
+		if ( $tax->attribute_name === $attr_name ) {
+			$attr_id = (int) $tax->attribute_id;
+			break;
+		}
+	}
+
+	if ( ! $attr_id ) {
+		$result = wc_create_attribute( array(
+			'name'         => $attr_cfg['label'],
+			'slug'         => $attr_name,
+			'type'         => 'select',
+			'order_by'     => 'menu_order',
+			'has_archives' => false,
+		) );
+		$attr_id = is_wp_error( $result ) ? 0 : (int) $result;
+		echo "Created attribute: {$taxonomy}\n";
+	}
+
+	$glow_helix_attr_ids[ $attr_name ] = $attr_id;
+
+	// Register the taxonomy in the current request so term functions work.
+	if ( ! taxonomy_exists( $taxonomy ) ) {
+		register_taxonomy( $taxonomy, array( 'product' ), array(
+			'hierarchical' => false,
+			'label'        => $attr_cfg['label'],
+			'show_ui'      => false,
+			'query_var'    => true,
+			'rewrite'      => array( 'slug' => $taxonomy ),
+		) );
+	}
+
+	// Insert any missing terms.
+	foreach ( $attr_cfg['terms'] as $slug => $label ) {
+		if ( ! term_exists( $slug, $taxonomy ) ) {
+			wp_insert_term( $label, $taxonomy, array( 'slug' => $slug ) );
+		}
+	}
+}
+
+// ── Step B: helper to build a WC_Product_Attribute and link terms ─────────
+
+/**
+ * Builds a WC_Product_Attribute for a global taxonomy attribute and links
+ * terms to the product post. Returns the attribute object or null if no
+ * matching terms were found.
+ */
+function glow_build_wc_attr( $product_id, $taxonomy, $attr_id, $term_slugs, $position ) {
+	$term_ids = array();
+	foreach ( $term_slugs as $slug ) {
+		$term = get_term_by( 'slug', $slug, $taxonomy );
+		if ( $term && ! is_wp_error( $term ) ) {
+			$term_ids[] = $term->term_id;
+		}
+	}
+	if ( empty( $term_ids ) ) {
+		return null;
+	}
+
+	wp_set_object_terms( $product_id, $term_ids, $taxonomy );
+
+	$wc_attr = new WC_Product_Attribute();
+	$wc_attr->set_id( $attr_id );
+	$wc_attr->set_name( $taxonomy );
+	$wc_attr->set_options( $term_ids );
+	$wc_attr->set_position( $position );
+	$wc_attr->set_visible( true );
+	$wc_attr->set_variation( false );
+
+	return $wc_attr;
+}
+
+// ── Step C: derive attribute term slugs from our existing product data ────
+
+// Concern taxonomy slugs → Helix concern terms.
+$glow_concern_map = array(
+	'dehydrated-dull'     => array( 'hydration', 'brightening' ),
+	'breakouts-texture'   => array( 'acne', 'pores', 'texture' ),
+	'fine-lines-firmness' => array( 'aging' ),
+	'sensitive-reactive'  => array( 'redness' ),
+);
+
+// Routine step number → Helix step term.
+$glow_step_map = array(
+	1 => 'cleanse',
+	2 => 'treat',   // exfoliators
+	3 => 'tone',
+	4 => 'treat',   // serums / ampoules
+	5 => 'moisturize',
+	6 => 'treat',   // eye care
+	7 => 'protect',
+	0 => 'mask',    // sheet masks and lips
+);
+
+// Keyword patterns → Helix ingredient term slug.
+$glow_ingredient_patterns = array(
+	'niacinamide'       => '/niacinamide/i',
+	'hyaluronic-acid'   => '/hyaluronic|sodium hyaluronate/i',
+	'retinol'           => '/retinol|retinyl|retinoid|retinal/i',
+	'vitamin-c'         => '/vitamin c|ascorbic|ascorbyl/i',
+	'centella-asiatica' => '/centella|madecassoside|asiaticoside/i',
+	'snail-mucin'       => '/snail/i',
+	'ceramide'          => '/ceramide/i',
+	'aha'               => '/\baha\b|glycolic|lactic|mandelic|tartaric|malic/i',
+	'bha'               => '/\bbha\b|salicylic|betaine salicylate/i',
+	'peptides'          => '/peptide/i',
+);
+
+// ── Step D: assign attributes to each demo product ────────────────────────
+
+$glow_helix_assigned = 0;
+$glow_helix_skipped  = 0;
+
+foreach ( $glow_products as $data ) {
+	$product_id = wc_get_product_id_by_sku( $data['sku'] );
+	if ( ! $product_id ) {
+		continue;
+	}
+
+	$product        = wc_get_product( $product_id );
+	$existing_attrs = $product->get_attributes();
+
+	// Idempotent check: skip if both required Helix fields are already set.
+	if ( isset( $existing_attrs['pa_skin-types'] ) && isset( $existing_attrs['pa_concerns-targeted'] ) ) {
+		$glow_helix_skipped++;
+		continue;
+	}
+
+	// Skin types — map directly from our $data['types'] array; use 'all'
+	// when a product targets every skin type (5 values in our set).
+	$all_skin_types   = array( 'dry', 'oily', 'combination', 'sensitive', 'normal' );
+	$product_types    = $data['types'];
+	$missing          = array_diff( $all_skin_types, $product_types );
+	$skin_type_slugs  = empty( $missing ) ? array( 'all' ) : $product_types;
+
+	// Concerns.
+	$concern_slugs = array();
+	foreach ( $data['concerns'] as $c ) {
+		if ( isset( $glow_concern_map[ $c ] ) ) {
+			foreach ( $glow_concern_map[ $c ] as $mapped ) {
+				$concern_slugs[] = $mapped;
+			}
+		}
+	}
+	$concern_slugs = array_values( array_unique( $concern_slugs ) );
+	if ( empty( $concern_slugs ) ) {
+		$concern_slugs = array( 'hydration' ); // safe fallback
+	}
+
+	// Routine step.
+	$step_slug = isset( $glow_step_map[ $data['step'] ] ) ? $glow_step_map[ $data['step'] ] : 'treat';
+
+	// Key ingredients — keyword-match against the actives string.
+	$actives_str     = $data['actives'];
+	$ingredient_slugs = array();
+	foreach ( $glow_ingredient_patterns as $ing_slug => $pattern ) {
+		if ( preg_match( $pattern, $actives_str ) ) {
+			$ingredient_slugs[] = $ing_slug;
+		}
+	}
+	if ( empty( $ingredient_slugs ) ) {
+		$ingredient_slugs = array( 'niacinamide' ); // safe fallback
+	}
+
+	// Build and attach all four attributes.
+	$new_attrs = $existing_attrs;
+
+	$a = glow_build_wc_attr( $product_id, 'pa_skin-types',        $glow_helix_attr_ids['skin-types'],        $skin_type_slugs,  0 );
+	$b = glow_build_wc_attr( $product_id, 'pa_concerns-targeted', $glow_helix_attr_ids['concerns-targeted'], $concern_slugs,    1 );
+	$c = glow_build_wc_attr( $product_id, 'pa_key-ingredients',   $glow_helix_attr_ids['key-ingredients'],   $ingredient_slugs, 2 );
+	$d = glow_build_wc_attr( $product_id, 'pa_step',              $glow_helix_attr_ids['step'],              array( $step_slug ), 3 );
+
+	if ( $a ) { $new_attrs['pa_skin-types']        = $a; }
+	if ( $b ) { $new_attrs['pa_concerns-targeted'] = $b; }
+	if ( $c ) { $new_attrs['pa_key-ingredients']   = $c; }
+	if ( $d ) { $new_attrs['pa_step']              = $d; }
+
+	$product->set_attributes( $new_attrs );
+	$product->save();
+
+	$glow_helix_assigned++;
+}
+
+echo "\nHelix attributes: {$glow_helix_assigned} products assigned, {$glow_helix_skipped} already had values.\n";
+
 echo "\nDone. {$glow_created} products created, {$glow_updated} updated, across " . count( $glow_categories ) . " categories.\n";
 echo "Categories, skin types, skin concerns and product reviews are in place.\n";
 echo "Product cards use bundled theme SVGs automatically until you attach media.\n";
