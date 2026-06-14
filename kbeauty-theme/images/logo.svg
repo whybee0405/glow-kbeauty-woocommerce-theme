@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 36" width="110" height="36" role="img" aria-label="Glow">
+  <title>Glow</title>
+  <!-- Botanical leaf mark -->
+  <path d="M 12 2 C 0 9 0 25 12 34 C 24 25 24 9 12 2 Z" fill="#6B8F5E"/>
+  <!-- Wordmark (Georgia used here as standalone SVG font fallback) -->
+  <text x="30" y="27" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#23281f" letter-spacing="5">GLOW</text>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="MEDIHEAL TEA TREE ESSENTIAL MASK x5">
+  <rect width="600" height="600" rx="28" fill="#EBEAE2"/>
+  
+  <ellipse cx="300" cy="476" rx="138" ry="15" fill="#23281F" opacity="0.10"/>
+  <rect x="180" y="166" width="240" height="304" rx="14" fill="#C9DCD2"/>
+  <rect x="180" y="166" width="240" height="42" rx="14" fill="#2E4636"/>
+  <rect x="180" y="196" width="240" height="12" fill="#2E4636"/>
+  <circle cx="398" cy="187" r="6" fill="#EBEAE2"/>
+  <rect x="196" y="226" width="10" height="120" rx="5" fill="#FFFFFF" opacity="0.3"/>
+  <rect x="205" y="244" width="190" height="158" rx="10" fill="#F3F2ED"/>
+  <text x="300" y="285.1" text-anchor="middle" font-family="'Spline Sans Mono',Consolas,monospace" font-size="14" font-weight="700" letter-spacing="2" fill="#23281F">MEDIHEAL</text>
+  <line x1="219" y1="300.9" x2="381" y2="300.9" stroke="#D9D7CC" stroke-width="1.5"/>
+  <text x="300" y="329.3" text-anchor="middle" font-family="'Spline Sans Mono',Consolas,monospace" font-size="9.5" font-weight="500" letter-spacing="0.5" fill="#23281F">TEA TREE</text>
+  <text x="300" y="351.4" text-anchor="middle" font-family="'Spline Sans Mono',Consolas,monospace" font-size="9.5" font-weight="500" letter-spacing="0.5" fill="#23281F">ESSENTIAL MASK x5</text>
+  <text x="300" y="383" text-anchor="middle" font-family="'Spline Sans Mono',Consolas,monospace" font-size="7.5" letter-spacing="1.5" fill="#6F7468">SEOUL · K-BEAUTY</text>
+</svg>
