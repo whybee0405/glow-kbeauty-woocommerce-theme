@@ -199,6 +199,16 @@ function wp_reset_postdata() {}
 function get_post( $id = null ) { return null; }
 function the_title() {}
 function get_the_title( $id = 0 ) { return ''; }
+function get_the_ID() { return $GLOBALS['digicars_current_id'] ?? 0; }
+
+/*
+ * get_header()/get_footer() are no-ops here: the harness already wraps the
+ * chosen template with header.php + footer.php (see the render block below),
+ * so templates that call get_header('shop')/get_footer('shop') must not emit
+ * a second copy.
+ */
+function get_header( $name = '' ) {}
+function get_footer( $name = '' ) {}
 
 /* WooCommerce page/url helpers used in header/footer (WooCommerce inactive). */
 function wc_get_page_permalink( $page ) { return ''; }
@@ -437,6 +447,15 @@ $template = basename( $template );
  * ---------------------------------------------------------------------- */
 $template_path = $GLOBALS['digicars_theme_dir'] . '/' . $template;
 $has_template  = is_file( $template_path ) && filesize( $template_path ) > 0;
+
+/*
+ * single-product.php renders ONE vehicle from the global $product. Seed it
+ * with the first dummy vehicle so the PDP has a current product to render.
+ */
+if ( 'single-product.php' === $template ) {
+	$GLOBALS['digicars_current_id'] = 101;
+	$GLOBALS['product']             = wc_get_product( 101 ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+}
 
 ob_start();
 require $GLOBALS['digicars_theme_dir'] . '/header.php';

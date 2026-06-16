@@ -1,0 +1,300 @@
+/* ==========================================================================
+   DIGICARS — WooCommerce-only stylesheet
+   --------------------------------------------------------------------------
+   Loaded only when WooCommerce is active (see functions.php). Holds styling
+   that is specific to commerce templates and has no home in style.css.
+
+   All product-detail (PDP) rules live under the `.pdp-*` namespace and lean
+   on the design tokens declared in style.css (:root). Do NOT edit style.css
+   from here — extend it.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   PDP — top bar (breadcrumb + condition badge)
+   -------------------------------------------------------------------------- */
+.pdp-topbar {
+  padding-block: var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+.pdp-topbar .woocommerce-breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--slate);
+}
+.pdp-topbar .woocommerce-breadcrumb a { color: var(--slate); }
+.pdp-topbar .woocommerce-breadcrumb a:hover { color: var(--signal); }
+.pdp-topbar .breadcrumb-sep { color: var(--line); padding-inline: 4px; }
+
+
+/* --------------------------------------------------------------------------
+   PDP — hero split (gallery + buy/assess panel)
+   -------------------------------------------------------------------------- */
+.pdp-hero { align-items: start; }
+
+/* Gallery */
+.pdp-gallery__main {
+  background: var(--paper-deep);
+  border-radius: var(--r-3);
+  overflow: hidden;
+}
+.pdp-gallery__main img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+}
+.pdp-gallery__thumbs {
+  list-style: none;
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-2);
+}
+.pdp-gallery__thumb {
+  border-radius: var(--r-2);
+  overflow: hidden;
+  background: var(--paper-deep);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease);
+}
+.pdp-gallery__thumb.is-active { border-color: var(--carbon); }
+.pdp-gallery__thumb:hover { border-color: var(--carbon); }
+.pdp-gallery__thumb img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+}
+
+/* Buy / assess panel */
+.pdp-panel > * + * { margin-top: var(--s-4); }
+.pdp-panel__title { margin: 0; }
+
+.pdp-panel__rating {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+.pdp-panel__rating-count { font-size: 0.85rem; }
+
+.pdp-panel__price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  padding-block: var(--s-2);
+}
+.pdp-panel__price-main {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  letter-spacing: -0.02em;
+  color: var(--carbon);
+  line-height: 1;
+}
+.pdp-panel__price-sub {
+  font-size: 0.95rem;
+  color: var(--slate);
+}
+
+.pdp-panel__tags { gap: var(--s-2); }
+.pdp-panel__tags .chip { cursor: default; }
+
+/* CTA cluster */
+.pdp-panel__cta > * + * { margin-top: var(--s-3); }
+.pdp-panel__cta-row { gap: var(--s-3); }
+.pdp-panel__cta-row .btn { flex: 1 1 auto; }
+.pdp-panel__compare {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+.pdp-panel__compare[aria-pressed="true"] {
+  --btn-bg: var(--carbon);
+  --btn-fg: var(--paper);
+}
+
+/* Assurance bullets */
+.pdp-panel__assurance {
+  list-style: none;
+  margin: 0;
+  padding: var(--s-4) 0 0;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: var(--s-2);
+}
+.pdp-panel__assurance li {
+  position: relative;
+  padding-left: 26px;
+  font-size: 0.9rem;
+  color: var(--slate);
+}
+.pdp-panel__assurance li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  background: no-repeat center / contain
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23F4561D' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+}
+
+
+/* --------------------------------------------------------------------------
+   PDP — key spec grid
+   -------------------------------------------------------------------------- */
+.pdp-specs {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  overflow: hidden;
+}
+.pdp-specs__row {
+  background: var(--paper);
+  padding: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pdp-specs__label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--slate);
+}
+.pdp-specs__value {
+  font-size: 0.95rem;
+  color: var(--carbon);
+  font-feature-settings: "tnum" 1;
+}
+
+
+/* --------------------------------------------------------------------------
+   PDP — affordability calculator
+   -------------------------------------------------------------------------- */
+.pdp-afford {
+  border-radius: var(--r-3);
+  padding: clamp(var(--s-5), 4vw, var(--s-8));
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-6);
+}
+.pdp-afford__intro > * + * { margin-top: var(--s-2); }
+.pdp-afford__intro .t-2 { margin: 0; }
+
+.pdp-afford__form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-4);
+  align-items: end;
+}
+.pdp-afford__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pdp-afford__field-label {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(246, 246, 244, 0.7);
+}
+.pdp-afford__field input,
+.pdp-afford__field select {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--paper);
+  background: var(--carbon-soft);
+  border: 1px solid rgba(246, 246, 244, 0.18);
+  border-radius: var(--r-2);
+  appearance: none;
+}
+.pdp-afford__field input:focus,
+.pdp-afford__field select:focus {
+  outline: none;
+  border-color: var(--volt);
+  box-shadow: 0 0 0 2px rgba(43, 111, 240, 0.35);
+}
+.pdp-afford__field select {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23F6F6F4' stroke-width='2.2' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+}
+
+.pdp-afford__output {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: var(--s-5);
+  border-top: 1px solid rgba(246, 246, 244, 0.16);
+}
+.pdp-afford__output-label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(246, 246, 244, 0.7);
+}
+.pdp-afford__output-value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--paper);
+}
+.pdp-afford__output-note { font-size: 0.78rem; }
+
+
+/* --------------------------------------------------------------------------
+   PDP — accordions / features
+   -------------------------------------------------------------------------- */
+.pdp-overview__summary {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--carbon);
+}
+.pdp-features { list-style: none; margin: 0; padding: 0; }
+.pdp-features .chip { cursor: default; }
+
+
+/* --------------------------------------------------------------------------
+   PDP — responsive
+   -------------------------------------------------------------------------- */
+@media (min-width: 900px) {
+  .pdp-afford {
+    grid-template-columns: 1fr 1.1fr;
+    align-items: center;
+  }
+  .pdp-afford__output {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgba(246, 246, 244, 0.16);
+  }
+}
+
+@media (max-width: 860px) {
+  .pdp-hero { grid-template-columns: 1fr; }
+  .pdp-afford__form { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .pdp-panel__cta-row { flex-direction: column; }
+  .pdp-panel__cta-row .btn { width: 100%; }
+}
