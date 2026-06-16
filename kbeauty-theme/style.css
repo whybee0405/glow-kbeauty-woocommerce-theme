@@ -78,12 +78,14 @@ WC tested up to: 9.5
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  max-width: 100%;    /* pins the layout viewport to device width on iOS */
   overflow-x: hidden; /* fallback */
   overflow-x: clip;   /* preferred: doesn't break position:sticky */
 }
 
 body {
   margin: 0;
+  max-width: 100%;    /* fallback partner to overflow-x for iOS Safari */
   overflow-x: hidden; /* fallback — must be on body too for iOS Safari horizontal scroll prevention */
   overflow-x: clip;
   background: var(--rice);
@@ -190,7 +192,9 @@ a:hover { color: var(--ink); }
 
 .grid-4 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* minmax(0, 1fr) lets tracks shrink below their content's min-width so cards
+     never blow the grid wider than the viewport on narrow screens. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(14px, 1.6vw, 24px);
 }
 
@@ -1751,7 +1755,7 @@ html.js [data-reveal].is-visible {
 
 /* 18. RESPONSIVE ------------------------------------------------------------------ */
 @media (max-width: 1100px) {
-  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pull-review { grid-template-columns: 1fr; gap: 2.5rem; }
   .lifestyle-band { min-height: 260px; }
   .footer-grid { grid-template-columns: 1fr 1fr; }

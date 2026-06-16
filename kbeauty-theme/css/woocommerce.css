@@ -166,11 +166,15 @@ ul.products {
 
 .shop-layout {
   display: grid;
-  grid-template-columns: 248px 1fr;
+  /* minmax(0, 1fr) stops the product column's grid content from forcing the
+     whole layout wider than the viewport when it collapses to one column. */
+  grid-template-columns: 248px minmax(0, 1fr);
   gap: clamp(2rem, 4vw, 4rem);
   padding-top: clamp(28px, 4vw, 48px);
   align-items: start;
 }
+
+.shop-main { min-width: 0; } /* grid item must be allowed to shrink below content width */
 
 .shop-filters { position: sticky; top: 96px; }
 
@@ -230,7 +234,8 @@ ul.products {
 .shop-toolbar {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
+  flex-wrap: wrap; /* ordering select drops below the count instead of overflowing on phones */
+  gap: 0.8rem 1.2rem;
   padding-bottom: 1.2rem;
   margin-bottom: 1.6rem;
   border-bottom: 1px solid var(--line);
@@ -257,7 +262,7 @@ ul.products {
 
 .shop-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(16px, 2vw, 28px) clamp(14px, 1.6vw, 24px);
 }
 
@@ -816,7 +821,7 @@ ul.products {
 
   .filter-scrim[hidden] { display: none; }
 
-  .shop-grid { grid-template-columns: repeat(2, 1fr); }
+  .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
   .pdp-grid { grid-template-columns: 1fr; }
   .pdp-gallery { position: static; }
