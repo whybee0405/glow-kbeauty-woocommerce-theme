@@ -8,3 +8,7 @@ docs/
 .playwright-mcp/
 MASTER_PROMPT_*.md
 node_modules/
+
+# Deploy credentials — never commit
+.deploy-config.ps1
+deploy.log

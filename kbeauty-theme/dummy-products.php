@@ -1009,7 +1009,7 @@ $glow_products = array(
 		'actives'     => 'Jeju aloe vera, Sodium hyaluronate, Allantoin',
 		'svg'         => '_default.svg',
 		'excerpt'     => 'Innisfree\'s single-ingredient philosophy in mask form — pure Jeju aloe pressed into a sheet that calms and hydrates in equal measure.',
-		'description' => "The "squeeze" in the name refers to how Innisfree cold-presses fresh aloe to preserve the polysaccharides. The result is a calming, cooling sheet mask that works year-round — cooling in summer, barrier-support in winter.",
+		'description' => 'The "squeeze" in the name refers to how Innisfree cold-presses fresh aloe to preserve the polysaccharides. The result is a calming, cooling sheet mask that works year-round — cooling in summer, barrier-support in winter.',
 	),
 	array(
 		'sku'         => 'GLW-MSK-004',
@@ -1697,7 +1697,7 @@ $glow_products = array(
 		'actives'     => 'Hyaluronic acid 5 types (low molecular), Panthenol, Centella',
 		'svg'         => '_default.svg',
 		'excerpt'     => 'Torriden\'s bestseller: low-molecular HA that reaches deeper skin layers faster — for the kind of dewy plump that lasts past midday.',
-		'description' => "The "low molecular" distinction matters. Smaller HA fragments penetrate further than standard HA, delivering hydration at the dermal layer rather than sitting on the surface. Five different sizes ensure full-depth coverage.",
+		'description' => 'The "low molecular" distinction matters. Smaller HA fragments penetrate further than standard HA, delivering hydration at the dermal layer rather than sitting on the surface. Five different sizes ensure full-depth coverage.',
 	),
 	array(
 		'sku'         => 'GLW-SRM-009',
@@ -2191,6 +2191,7 @@ foreach ( $glow_products as $index => $data ) {
 	}
 
 	echo ( $existing_id ? 'Updated: ' : 'Created: ' ) . $data['name'] . "\n";
+	unset( $product, $fresh, $reviews );
 }
 
 // Best-seller plausibility: give featured products a sales head start.
@@ -2326,29 +2327,31 @@ foreach ( $glow_helix_attrs as $attr_name => $attr_cfg ) {
  * terms to the product post. Returns the attribute object or null if no
  * matching terms were found.
  */
-function glow_build_wc_attr( $product_id, $taxonomy, $attr_id, $term_slugs, $position ) {
-	$term_ids = array();
-	foreach ( $term_slugs as $slug ) {
-		$term = get_term_by( 'slug', $slug, $taxonomy );
-		if ( $term && ! is_wp_error( $term ) ) {
-			$term_ids[] = $term->term_id;
+if ( ! function_exists( 'glow_build_wc_attr' ) ) {
+	function glow_build_wc_attr( $product_id, $taxonomy, $attr_id, $term_slugs, $position ) {
+		$term_ids = array();
+		foreach ( $term_slugs as $slug ) {
+			$term = get_term_by( 'slug', $slug, $taxonomy );
+			if ( $term && ! is_wp_error( $term ) ) {
+				$term_ids[] = $term->term_id;
+			}
 		}
+		if ( empty( $term_ids ) ) {
+			return null;
+		}
+
+		wp_set_object_terms( $product_id, $term_ids, $taxonomy );
+
+		$wc_attr = new WC_Product_Attribute();
+		$wc_attr->set_id( $attr_id );
+		$wc_attr->set_name( $taxonomy );
+		$wc_attr->set_options( $term_ids );
+		$wc_attr->set_position( $position );
+		$wc_attr->set_visible( true );
+		$wc_attr->set_variation( false );
+
+		return $wc_attr;
 	}
-	if ( empty( $term_ids ) ) {
-		return null;
-	}
-
-	wp_set_object_terms( $product_id, $term_ids, $taxonomy );
-
-	$wc_attr = new WC_Product_Attribute();
-	$wc_attr->set_id( $attr_id );
-	$wc_attr->set_name( $taxonomy );
-	$wc_attr->set_options( $term_ids );
-	$wc_attr->set_position( $position );
-	$wc_attr->set_visible( true );
-	$wc_attr->set_variation( false );
-
-	return $wc_attr;
 }
 
 // ── Step C: derive attribute term slugs from our existing product data ────
@@ -2404,6 +2407,7 @@ foreach ( $glow_products as $data ) {
 	// Idempotent check: skip if both required Helix fields are already set.
 	if ( isset( $existing_attrs['pa_skin-types'] ) && isset( $existing_attrs['pa_concerns-targeted'] ) ) {
 		$glow_helix_skipped++;
+		unset( $product, $existing_attrs );
 		continue;
 	}
 
@@ -2458,6 +2462,7 @@ foreach ( $glow_products as $data ) {
 
 	$product->set_attributes( $new_attrs );
 	$product->save();
+	unset( $product, $new_attrs, $a, $b, $c, $d );
 
 	$glow_helix_assigned++;
 }

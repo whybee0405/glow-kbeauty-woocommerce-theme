@@ -89,12 +89,19 @@ $glow_shop_url = glow_wc_active() ? wc_get_page_permalink( 'shop' ) : home_url( 
 
 <main id="main">
 
+	<?php
+	$glow_hero_sc = get_theme_mod( 'glow_hero_shortcode', '' );
+	if ( $glow_hero_sc ) {
+		echo '<div class="pre-hero">' . do_shortcode( wp_kses_post( $glow_hero_sc ) ) . '</div>';
+	}
+	?>
+
 	<!-- 1. Hero -->
 	<section class="hero">
 		<div class="container hero-grid">
 
 			<div class="hero-copy">
-				<h1 class="t-hero"><?php echo wp_kses( __( 'Skin is a <em>practice,</em> not a product.', 'glow-kbeauty' ), array( 'em' => array() ) ); ?></h1>
+				<h1 class="t-hero"><?php echo wp_kses( __( 'The glow is in the <em>method,</em> not the miracle.', 'glow-kbeauty' ), array( 'em' => array() ) ); ?></h1>
 				<p class="lead"><?php esc_html_e( 'Korean skincare works because of the order you apply it. We organised the whole store that way: seven steps, cleanse to SPF. Each product earns its place.', 'glow-kbeauty' ); ?></p>
 
 				<div class="hero-ctas">
@@ -126,6 +133,12 @@ $glow_shop_url = glow_wc_active() ? wc_get_page_permalink( 'shop' ) : home_url( 
 						</a>
 					</div>
 				<?php endforeach; ?>
+				<button class="stage-nav stage-prev" type="button" aria-label="<?php esc_attr_e( 'Previous step', 'glow-kbeauty' ); ?>" data-stage-prev>
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+				</button>
+				<button class="stage-nav stage-next" type="button" aria-label="<?php esc_attr_e( 'Next step', 'glow-kbeauty' ); ?>" data-stage-next>
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+				</button>
 			</div>
 
 		</div>

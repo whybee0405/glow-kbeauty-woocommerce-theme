@@ -32,7 +32,9 @@ function glow_render_import_page() {
 		check_admin_referer( 'glow_import_demo', 'glow_import_nonce' )
 	) {
 		if ( $wc_active ) {
-			@set_time_limit( 300 );
+			@set_time_limit( 0 );
+			@ini_set( 'memory_limit', '512M' );
+			ignore_user_abort( true );
 
 			ob_start();
 			require get_template_directory() . '/dummy-products.php';

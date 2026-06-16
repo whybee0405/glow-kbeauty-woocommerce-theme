@@ -105,11 +105,33 @@
 		var stage = qs('[data-hero-stage]');
 		if (!stage) { return; }
 
+		// Compute slide direction based on step distance (handles wrap-around)
+		var n = qsa('[data-stage]', stage).length;
+		if (stepNo !== activeStep) {
+			var fwdDist = (stepNo - activeStep + n) % n;
+			var bwdDist = (activeStep - stepNo + n) % n;
+			stage.setAttribute('data-nav-dir', fwdDist <= bwdDist ? 'forward' : 'backward');
+		}
+
 		activeStep = stepNo;
+
+		// Clear any lingering exit animation before starting new one
+		qsa('.stage-item.is-leaving', stage).forEach(function (item) {
+			item.classList.remove('is-leaving');
+		});
 
 		qsa('[data-stage]', stage).forEach(function (item) {
 			var isActive = parseInt(item.getAttribute('data-stage'), 10) === stepNo;
-			item.classList.toggle('is-active', isActive);
+			var wasActive = item.classList.contains('is-active');
+
+			if (wasActive && !isActive) {
+				item.classList.remove('is-active');
+				item.classList.add('is-leaving');
+				setTimeout(function () { item.classList.remove('is-leaving'); }, 320);
+			} else if (!wasActive && isActive) {
+				item.classList.add('is-active');
+			}
+
 			if (isActive) {
 				stage.classList.remove('tone-seafoam', 'tone-petal', 'tone-rice-deep');
 				stage.classList.add(item.getAttribute('data-tone') || 'tone-seafoam');
@@ -118,6 +140,11 @@
 
 		qsa('.rail-step[data-step]').forEach(function (step) {
 			step.classList.toggle('is-active', parseInt(step.getAttribute('data-step'), 10) === stepNo);
+		});
+
+		// Update dot indicators if present
+		qsa('.stage-dot[data-dot]', stage).forEach(function (dot) {
+			dot.classList.toggle('is-active', parseInt(dot.getAttribute('data-dot'), 10) === stepNo);
 		});
 	}
 
@@ -161,6 +188,8 @@
 		}
 
 		function advance() {
+			var stageEl2 = qs('[data-hero-stage]');
+			if (stageEl2) { stageEl2.setAttribute('data-nav-dir', 'forward'); }
 			var next = (activeStep % totalSteps()) + 1;
 			activateStep(next);
 			restartBar();
@@ -194,6 +223,76 @@
 		});
 
 		start();
+
+		// Stop auto-advance permanently after any manual navigation
+		stageEl.addEventListener('glow:stage-manual', stop);
+	}());
+
+	/* ------------------------------------------------------------------
+	 * Hero stage — touch swipe + arrow buttons + dot indicators
+	 * ------------------------------------------------------------------ */
+	(function () {
+		var stageEl = qs('[data-hero-stage]');
+		if (!stageEl) { return; }
+
+		function stageCount() {
+			return qsa('[data-stage]', stageEl).length;
+		}
+
+		function navigate(toStep) {
+			activateStep(toStep);
+			stageEl.dispatchEvent(new CustomEvent('glow:stage-manual'));
+		}
+
+		function goPrev() {
+			var n = stageCount();
+			navigate(((activeStep - 2 + n) % n) + 1);
+		}
+
+		function goNext() {
+			navigate((activeStep % stageCount()) + 1);
+		}
+
+		// Arrow buttons
+		var prevBtn = qs('[data-stage-prev]');
+		var nextBtn = qs('[data-stage-next]');
+		if (prevBtn) { prevBtn.addEventListener('click', goPrev); }
+		if (nextBtn) { nextBtn.addEventListener('click', goNext); }
+
+		// Dot indicators (injected into stage, shown on touch devices via CSS)
+		var dotsEl = document.createElement('div');
+		dotsEl.className = 'stage-dots';
+		dotsEl.setAttribute('aria-hidden', 'true');
+		var total = stageCount();
+		for (var i = 1; i <= total; i++) {
+			var dot = document.createElement('button');
+			dot.type = 'button';
+			dot.className = 'stage-dot' + (i === 1 ? ' is-active' : '');
+			dot.setAttribute('data-dot', String(i));
+			dotsEl.appendChild(dot);
+		}
+		stageEl.appendChild(dotsEl);
+
+		dotsEl.addEventListener('click', function (e) {
+			var dot = e.target.closest('[data-dot]');
+			if (!dot) { return; }
+			navigate(parseInt(dot.getAttribute('data-dot'), 10));
+		});
+
+		// Touch swipe — horizontal swipe of ≥40 px that is more horizontal than vertical
+		var touchX = 0;
+		var touchY = 0;
+		stageEl.addEventListener('touchstart', function (e) {
+			touchX = e.changedTouches[0].clientX;
+			touchY = e.changedTouches[0].clientY;
+		}, { passive: true });
+
+		stageEl.addEventListener('touchend', function (e) {
+			var dx = e.changedTouches[0].clientX - touchX;
+			var dy = e.changedTouches[0].clientY - touchY;
+			if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) { return; }
+			if (dx < 0) { goNext(); } else { goPrev(); }
+		}, { passive: true });
 	}());
 
 	/* ------------------------------------------------------------------

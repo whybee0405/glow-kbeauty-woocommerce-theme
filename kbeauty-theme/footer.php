@@ -41,13 +41,15 @@
 
 	</div>
 
-	<p class="footer-wordmark" aria-hidden="true">Skin is a practice.</p>
+	<p class="footer-wordmark" aria-hidden="true">Layer by layer.</p>
 </footer>
 
 <div class="toast" role="status" aria-live="polite" data-toast>
 	<span class="toast-dot" aria-hidden="true"></span>
 	<span data-toast-message></span>
 </div>
+
+ <script src="https://helix.cloudia.co.za/v1/widget/embed.js?key=6428bd19-fb03-468d-8352-0f26eda2a0ff"></script>
 
 <?php wp_footer(); ?>
 </body>

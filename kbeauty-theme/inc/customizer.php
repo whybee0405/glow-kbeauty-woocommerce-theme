@@ -22,6 +22,36 @@ function glow_customizer_register( $wp_customize ) {
 	);
 
 	/* ------------------------------------------------------------------
+	 * Section: Homepage
+	 * ------------------------------------------------------------------ */
+	$wp_customize->add_section(
+		'glow_homepage',
+		array(
+			'title'    => __( 'Homepage', 'glow-kbeauty' ),
+			'panel'    => 'glow_panel',
+			'priority' => 5,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'glow_hero_shortcode',
+		array(
+			'default'           => '[helix_search]',
+			'sanitize_callback' => 'sanitize_text_field',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp_customize->add_control(
+		'glow_hero_shortcode',
+		array(
+			'label'       => __( 'Shortcode above hero', 'glow-kbeauty' ),
+			'description' => __( 'Leave blank to hide. Example: [helix_search]', 'glow-kbeauty' ),
+			'section'     => 'glow_homepage',
+			'type'        => 'text',
+		)
+	);
+
+	/* ------------------------------------------------------------------
 	 * Section: Notice Bar
 	 * ------------------------------------------------------------------ */
 	$wp_customize->add_section(

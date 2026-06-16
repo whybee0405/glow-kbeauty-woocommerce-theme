@@ -13,7 +13,8 @@ ul.products {
   padding: 0;
 }
 
-.product-card { position: relative; }
+/* min-width: 0 overrides the grid default of min-width: auto, preventing content from blowing out columns */
+.product-card { position: relative; min-width: 0; }
 
 .card-media {
   position: relative;
@@ -119,7 +120,7 @@ ul.products {
 
 .quick-add[aria-busy="true"] { opacity: 0.6; pointer-events: none; }
 
-.card-body { padding: 0.9rem 0.2rem 0; }
+.card-body { padding: 0.9rem 0.2rem 0; min-width: 0; overflow: hidden; }
 
 .card-meta {
   display: flex;
@@ -831,14 +832,35 @@ ul.products {
   .pdp-thumbs { gap: 0.4rem; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .pdp-thumbs::-webkit-scrollbar { display: none; }
   .pdp-price { font-size: 1.35rem; }
+
+  .card-title {
+    font-size: 0.88rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2em;
+  }
+
+  .card-price { font-size: 0.88rem; }
 }
 
 @media (max-width: 480px) {
   /* Always surface interactive elements — no hover required */
-  .quick-add { transform: translateY(0); font-size: 0.8rem; }
+  .quick-add { transform: translateY(0); font-size: 0.8rem; min-height: 44px; }
   .wishlist-btn { opacity: 1; width: 44px; height: 44px; }
 
   .woocommerce table.shop_table img { width: 48px; }
   .woocommerce .coupon { flex-wrap: wrap; }
   .woocommerce .coupon .input-text { width: 100%; }
+}
+
+/* Push page bottom above the Helix / live-chat fixed widget on touch screens */
+@media (hover: none) {
+  #main, .site-main, main { padding-bottom: 80px; }
 }

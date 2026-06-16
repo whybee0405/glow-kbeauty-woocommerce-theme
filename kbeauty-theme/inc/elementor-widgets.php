@@ -30,12 +30,12 @@ class Glow_Hero_Stage_Widget extends \Elementor\Widget_Base {
 		$this->add_control( 'eyebrow_text', array(
 			'label'   => __( 'Eyebrow text', 'glow-kbeauty' ),
 			'type'    => \Elementor\Controls_Manager::TEXT,
-			'default' => __( 'Skin, in practice', 'glow-kbeauty' ),
+			'default' => __( 'The K-beauty method', 'glow-kbeauty' ),
 		) );
 		$this->add_control( 'heading', array(
 			'label'   => __( 'Heading (use <em> for yuja underline)', 'glow-kbeauty' ),
 			'type'    => \Elementor\Controls_Manager::WYSIWYG,
-			'default' => __( 'Skin is a <em>practice,</em> not a product.', 'glow-kbeauty' ),
+			'default' => __( 'The glow is in the <em>method,</em> not the miracle.', 'glow-kbeauty' ),
 		) );
 		$this->add_control( 'lead', array(
 			'label'   => __( 'Lead paragraph', 'glow-kbeauty' ),
