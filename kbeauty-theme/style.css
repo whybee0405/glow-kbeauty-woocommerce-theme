@@ -904,7 +904,7 @@ body.search-open .search-overlay {
   to   { transform: scaleX(1); }
 }
 
-/* Hero stage prev/next arrows — shifted up slightly so they centre on the image area, not the meta */
+/* Hero stage prev/next arrows — borderless, frosted-glass circles instead of solid boxes */
 .stage-nav {
   position: absolute;
   top: calc(50% - 2rem);
@@ -913,21 +913,29 @@ body.search-open .search-overlay {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--r-m);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
   border: none;
-  background: rgba(35, 40, 31, 0.48);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   color: var(--rice);
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.22s var(--ease), background 0.15s;
+  transition: opacity 0.22s var(--ease), background 0.15s, transform 0.15s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.stage-nav svg { width: 22px; height: 22px; pointer-events: none; flex-shrink: 0; }
-.stage-prev { left: 0.85rem; }
-.stage-next { right: 0.85rem; }
+.stage-nav svg {
+  width: 19px;
+  height: 19px;
+  pointer-events: none;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+.stage-prev { left: 0.7rem; }
+.stage-next { right: 0.7rem; }
 
 /* Desktop: fade in when hovering the stage */
 .hero-stage:hover .stage-nav,
@@ -935,15 +943,15 @@ body.search-open .search-overlay {
   opacity: 1;
   pointer-events: auto;
 }
-.stage-nav:hover { background: rgba(35, 40, 31, 0.72); }
-.stage-nav:active { background: rgba(35, 40, 31, 0.9); }
+.stage-nav:hover { background: rgba(255, 255, 255, 0.24); }
+.stage-nav:active { background: rgba(255, 255, 255, 0.32); transform: translateY(-50%) scale(0.93); }
 
-/* Touch: always visible */
+/* Touch: always visible, kept subtle so it doesn't fight the product imagery */
 @media (hover: none) {
   .stage-nav {
     opacity: 1;
     pointer-events: auto;
-    background: rgba(35, 40, 31, 0.38);
+    background: rgba(255, 255, 255, 0.16);
   }
 }
 
