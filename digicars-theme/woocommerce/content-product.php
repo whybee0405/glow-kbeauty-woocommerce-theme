@@ -81,7 +81,7 @@ if ( $product->get_image_id() ) {
 } else {
 	$image = sprintf(
 		'<img src="%1$s" alt="%2$s" width="640" height="420" loading="lazy" decoding="async" />',
-		esc_url( get_theme_file_uri( 'images/vehicles/_default.jpg' ) ),
+		esc_url( get_theme_file_uri( 'images/vehicles/_default.svg' ) ),
 		esc_attr( $title )
 	);
 }

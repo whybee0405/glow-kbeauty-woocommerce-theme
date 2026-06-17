@@ -107,7 +107,7 @@ if ( $product->get_image_id() ) {
 } else {
 	$hero_image = sprintf(
 		'<img src="%1$s" alt="%2$s" width="960" height="640" decoding="async" />',
-		esc_url( get_theme_file_uri( 'images/vehicles/_default.jpg' ) ),
+		esc_url( get_theme_file_uri( 'images/vehicles/_default.svg' ) ),
 		esc_attr( $title )
 	);
 }
@@ -461,7 +461,7 @@ $disclosure   = __( 'Prices include VAT. Monthly estimate at 11.5% over 72 month
 				<?php endif; ?>
 
 				<details class="accordion__item">
-					<summary><?php esc_html_e( 'Finance &amp; disclosure', 'digicars' ); ?></summary>
+					<summary><?php esc_html_e( 'Finance & disclosure', 'digicars' ); ?></summary>
 					<div class="accordion__panel prose">
 						<p><?php echo esc_html( $finance_note ); ?></p>
 						<p>

@@ -18,7 +18,7 @@ $digicars_shop = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permal
 $digicars_shop = $digicars_shop ? $digicars_shop : home_url( '/shop' );
 $digicars_blog = home_url( '/car-torque' );
 $digicars_fin  = home_url( '/finance' );
-$digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.jpg' );
+$digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 ?>
 
 <main id="main" class="site-main">
@@ -389,7 +389,7 @@ $digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.jpg' );
 				<div class="section-head">
 					<div class="section-head__copy stack-sm">
 						<p class="eyebrow eyebrow--signal"><?php esc_html_e( 'Car Torque', 'digicars' ); ?></p>
-						<h2 class="t-1"><?php esc_html_e( 'Buying advice, road tests &amp; EV talk.', 'digicars' ); ?></h2>
+						<h2 class="t-1"><?php esc_html_e( 'Buying advice, road tests & EV talk.', 'digicars' ); ?></h2>
 					</div>
 					<a class="btn btn--outline" href="<?php echo esc_url( $digicars_blog ); ?>"><?php esc_html_e( 'Read Car Torque', 'digicars' ); ?></a>
 				</div>

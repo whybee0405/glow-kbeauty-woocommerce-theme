@@ -115,7 +115,7 @@ if ( ! function_exists( 'digicars_seo_default_image' ) ) {
 	 */
 	function digicars_seo_default_image(): string {
 		if ( function_exists( 'get_theme_file_uri' ) ) {
-			return get_theme_file_uri( 'images/hero/hero-showroom.jpg' );
+			return get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 		}
 		return '';
 	}

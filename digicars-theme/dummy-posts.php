@@ -153,8 +153,8 @@ $digicars_blog_thumb_id = 0;
 if ( function_exists( 'get_theme_file_path' ) ) {
 	$digicars_thumb_candidates = array(
 		get_theme_file_path( 'images/blog/car-torque.jpg' ),
-		get_theme_file_path( 'images/hero/hero-showroom.jpg' ),
-		get_theme_file_path( 'images/vehicles/_default.jpg' ),
+		get_theme_file_path( 'images/hero/hero-showroom.svg' ),
+		get_theme_file_path( 'images/vehicles/_default.svg' ),
 	);
 	foreach ( $digicars_thumb_candidates as $digicars_thumb_path ) {
 		if ( ! $digicars_thumb_path || ! file_exists( $digicars_thumb_path ) ) {

@@ -1405,8 +1405,8 @@ foreach ( $digicars_vehicles as $v ) {
 	/* ---- Thumbnail sideload (best-effort, never fatal). --------------- */
 	if ( ! has_post_thumbnail( $product_id ) && function_exists( 'get_theme_file_path' ) ) {
 		$candidates = array(
-			get_theme_file_path( 'images/vehicles/' . $v['body'] . '-render.jpg' ),
-			get_theme_file_path( 'images/vehicles/_default.jpg' ),
+			get_theme_file_path( 'images/vehicles/' . $v['body'] . '-render.svg' ),
+			get_theme_file_path( 'images/vehicles/_default.svg' ),
 		);
 		foreach ( $candidates as $img_path ) {
 			if ( ! $img_path || ! file_exists( $img_path ) ) {

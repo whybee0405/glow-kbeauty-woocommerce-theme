@@ -383,7 +383,7 @@ if ( ! class_exists( 'WC_Product' ) ) {
 		public function is_on_sale() { return false; }
 		public function is_purchasable() { return false; }
 		public function get_image( $size = 'digicars-card', $attr = array() ) {
-			$src = $this->data['image'] ?? ( $GLOBALS['digicars_theme_uri'] . '/images/vehicles/_default.jpg' );
+			$src = $this->data['image'] ?? ( $GLOBALS['digicars_theme_uri'] . '/images/vehicles/_default.svg' );
 			$alt = esc_attr( $this->get_name() );
 			return '<img class="vehicle-card__img" src="' . esc_attr( $src ) . '" alt="' . $alt . '" loading="lazy" width="640" height="420">';
 		}
@@ -411,7 +411,7 @@ function wc_get_template_part( $slug, $name = '' ) { $card = $GLOBALS['digicars_
  * ZAR pricing, monthly-from, identity + powertrain + history fields.
  * ---------------------------------------------------------------------- */
 function digicars_preview_seed() {
-	$img = $GLOBALS['digicars_theme_uri'] . '/images/vehicles/_default.jpg';
+	$img = $GLOBALS['digicars_theme_uri'] . '/images/vehicles/_default.svg';
 
 	$vehicles = array(
 		101 => array(
