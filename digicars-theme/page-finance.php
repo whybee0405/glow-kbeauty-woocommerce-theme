@@ -185,7 +185,7 @@ $digicars_aff_monthly = function_exists( 'digicars_monthly_from' ) ? digicars_mo
 				</div>
 				<div class="field">
 					<label class="label" for="finance-vehicle"><?php esc_html_e( 'Vehicle of interest', 'digicars' ); ?></label>
-					<input class="input" type="text" id="finance-vehicle" name="vehicle" placeholder="<?php esc_attr_e( 'e.g. Chery Tiggo 7 Pro, or “open to suggestions”', 'digicars' ); ?>" />
+					<input class="input" type="text" id="finance-vehicle" name="vehicle" placeholder="<?php esc_attr_e( 'e.g. Chery Tiggo 7 Pro, or "open to suggestions"', 'digicars' ); ?>" />
 				</div>
 			</div>
 

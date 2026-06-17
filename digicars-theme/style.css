@@ -824,73 +824,98 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--carbon); width
 /* ==========================================================================
    10  HEADER / NOTICE BAR / NAV / MOBILE OVERLAY
    ========================================================================== */
+/* ---- Notice bar — scrolling ticker ----------------------------------- */
 .notice-bar {
-  background: var(--carbon);
-  color: var(--paper);
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.04em;
-  text-align: center;
-  padding: 8px var(--gutter);
+  background: #0a0c0f;
+  color: rgba(246,246,244,0.45);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  overflow: hidden;
+  padding: 8px 0;
+  user-select: none;
 }
-.notice-bar a { color: var(--signal); text-decoration: underline; text-underline-offset: 2px; }
+.notice-bar__track {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  white-space: nowrap;
+  animation: tickerScroll 55s linear infinite;
+}
+.notice-bar__sep { color: var(--signal); opacity: 0.55; font-size: 0.6rem; }
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .notice-bar__track { animation: none; padding: 0 var(--gutter); }
+}
 
+/* ---- Site header — dark, minimal ------------------------------------- */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 70;
-  background: var(--paper);
-  border-bottom: 1px solid transparent;
-  transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  background: #14161A;
+  border-bottom: 1px solid rgba(246,246,244,0.06);
+  transition: box-shadow 240ms var(--ease), border-color 240ms var(--ease), background 240ms var(--ease);
 }
 .site-header.is-scrolled {
-  border-bottom-color: var(--line);
-  box-shadow: var(--shadow-2);
+  background: rgba(20,22,26,0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom-color: rgba(246,246,244,0.09);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
 }
 .site-header__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--s-5);
-  height: 72px;
+  height: 68px;
 }
 
 .wordmark {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   letter-spacing: -0.03em;
-  color: var(--carbon);
+  color: var(--paper);
 }
 .wordmark span { color: var(--signal); }
 
+/* ---- Primary nav — clean pill hover ---------------------------------- */
 .nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   align-items: center;
-  gap: var(--s-6);
+  gap: 2px;
 }
 .nav__link {
-  font-size: 0.95rem;
+  display: block;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: var(--carbon);
-  position: relative;
-  padding: 4px 0;
-  transition: color var(--dur) var(--ease);
+  color: rgba(246,246,244,0.58);
+  padding: 6px 12px;
+  border-radius: var(--r-2);
+  transition: color 160ms var(--ease), background 160ms var(--ease);
 }
-.nav__link::after {
-  content: "";
-  position: absolute;
-  left: 0; bottom: 0;
-  width: 100%; height: 2px;
-  background: var(--signal);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur) var(--ease);
+@media (hover: hover) and (pointer: fine) {
+  .nav__link:hover {
+    color: var(--paper);
+    background: rgba(246,246,244,0.08);
+  }
 }
-.nav__link:hover, .nav__link[aria-current="page"] { color: var(--carbon); }
-.nav__link:hover::after, .nav__link[aria-current="page"]::after { transform: scaleX(1); }
+.nav__link[aria-current="page"] {
+  color: var(--paper);
+  background: rgba(246,246,244,0.1);
+}
 
-.header-utils { display: flex; align-items: center; gap: var(--s-3); }
+.header-utils { display: flex; align-items: center; gap: var(--s-2); }
 
 .icon-btn {
   display: inline-flex;
@@ -898,10 +923,12 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--carbon); width
   justify-content: center;
   width: 44px; height: 44px;
   border-radius: var(--r-pill);
-  color: var(--carbon);
-  transition: background var(--dur) var(--ease);
+  color: rgba(246,246,244,0.65);
+  transition: color 160ms var(--ease), background 160ms var(--ease);
 }
-.icon-btn:hover { background: var(--paper-deep); }
+@media (hover: hover) and (pointer: fine) {
+  .icon-btn:hover { color: var(--paper); background: rgba(246,246,244,0.08); }
+}
 .icon-btn svg { width: 20px; height: 20px; }
 
 /* Hamburger — hidden until breakpoint */

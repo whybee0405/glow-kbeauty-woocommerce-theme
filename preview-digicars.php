@@ -229,6 +229,7 @@ function digicars_preview_seed_posts() {
 			'excerpt'  => 'Demo models can shave tens of thousands off the sticker while still feeling box-fresh. Here is how to weigh the trade-offs against warranty and finance.',
 			'category' => 'Car Torque',
 			'content'  => str_repeat( 'word ', 540 ),
+			'image'    => 'digicars-theme/images/blog/ct-buying.svg',
 		),
 		202 => array(
 			'ID'       => 202,
@@ -237,14 +238,16 @@ function digicars_preview_seed_posts() {
 			'excerpt'  => 'Load-shedding, home charging and the price of a kilowatt-hour — we crunch what an electric SUV actually costs to run on the Highveld.',
 			'category' => 'Car Torque',
 			'content'  => str_repeat( 'word ', 720 ),
+			'image'    => 'digicars-theme/images/blog/ct-ev.svg',
 		),
 		203 => array(
 			'ID'       => 203,
-			'title'    => 'First-car buyer’s checklist: from budget to keys',
+			'title'    => 'First-car buyer\'s checklist: from budget to keys',
 			'date'     => '1 June 2026',
 			'excerpt'  => 'A no-nonsense walkthrough for first-time buyers — setting a monthly budget, getting pre-approved and avoiding the classic rookie mistakes.',
 			'category' => 'Car Torque',
 			'content'  => str_repeat( 'word ', 410 ),
+			'image'    => 'digicars-theme/images/blog/ct-finance.svg',
 		),
 	);
 }
@@ -302,8 +305,16 @@ function get_post_field( $field, $id = 0 ) {
 	$id = (int) $id;
 	return $GLOBALS['digicars_post_store'][ $id ][ $field ] ?? '';
 }
-function has_post_thumbnail( $id = 0 ) { return false; }
-function get_the_post_thumbnail( $id = 0, $size = '' ) { return ''; }
+function has_post_thumbnail( $id = 0 ) {
+	$id = (int) $id ?: (int) ( $GLOBALS['digicars_current_id'] ?? 0 );
+	return ! empty( $GLOBALS['digicars_post_store'][ $id ]['image'] );
+}
+function get_the_post_thumbnail( $id = 0, $size = '' ) {
+	$id  = (int) $id ?: (int) ( $GLOBALS['digicars_current_id'] ?? 0 );
+	$src = $GLOBALS['digicars_post_store'][ $id ]['image'] ?? '';
+	if ( ! $src ) { return ''; }
+	return '<img src="' . htmlspecialchars( $src, ENT_QUOTES ) . '" alt="" width="1200" height="800" loading="lazy">';
+}
 function the_post_thumbnail( $size = '' ) {}
 function wp_strip_all_tags( $s ) { return trim( strip_tags( (string) $s ) ); }
 if ( ! function_exists( 'wp_trim_words' ) ) {

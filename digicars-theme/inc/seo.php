@@ -388,10 +388,10 @@ if ( ! function_exists( 'digicars_seo_build_meta' ) ) {
 		/* ---- Search results ------------------------------------------------ */
 		if ( function_exists( 'is_search' ) && is_search() ) {
 			$q = function_exists( 'get_search_query' ) ? (string) get_search_query() : '';
-			$data['title']       = sprintf( /* translators: %1$s query, %2$s site. */ __( 'Results for “%1$s” — %2$s', 'digicars' ), $q, $site_name );
+			$data['title']       = sprintf( /* translators: %1$s query, %2$s site. */ __( 'Results for "%1$s" — %2$s', 'digicars' ), $q, $site_name );
 			$data['description'] = sprintf(
 				/* translators: %s: the search query. */
-				__( 'Results for “%s”. Browse matching cars on Digicars, see the monthly repayment on each, and get pre-qualified for finance online.', 'digicars' ),
+				__( 'Results for "%s". Browse matching cars on Digicars, see the monthly repayment on each, and get pre-qualified for finance online.', 'digicars' ),
 				$q
 			);
 			$data['keywords'] = trim( $q . ', ' . __( 'cars for sale South Africa', 'digicars' ) );

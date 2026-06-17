@@ -361,51 +361,51 @@ $digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 	</section>
 
 	<?php /* 8 --------------------------------------------------------- Reviews */ ?>
-	<section class=”section” data-reveal>
-		<div class=”container”>
-			<div class=”section-head”>
-				<div class=”section-head__copy stack-sm”>
-					<p class=”eyebrow”><?php esc_html_e( 'From our customers', 'digicars' ); ?></p>
-					<h2 class=”t-1”><?php esc_html_e( 'Real people. Real keys collected.', 'digicars' ); ?></h2>
+	<section class="section" data-reveal>
+		<div class="container">
+			<div class="section-head">
+				<div class="section-head__copy stack-sm">
+					<p class="eyebrow"><?php esc_html_e( 'From our customers', 'digicars' ); ?></p>
+					<h2 class="t-1"><?php esc_html_e( 'Real people. Real keys collected.', 'digicars' ); ?></h2>
 				</div>
-				<p class=”t-mono muted home-reviews__score”><?php esc_html_e( '4.8 / 5 · 2 300+ reviews', 'digicars' ); ?></p>
+				<p class="t-mono muted home-reviews__score"><?php esc_html_e( '4.8 / 5 · 2 300+ reviews', 'digicars' ); ?></p>
 			</div>
 
-			<div class=”home-reviews-layout”>
+			<div class="home-reviews-layout">
 
 				<?php /* Featured large review */ ?>
-				<blockquote class=”home-review home-review--hero”>
-					<p class=”home-review__stars t-mono” aria-label=”<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>” aria-hidden=”false”>★★★★★</p>
-					<div class=”home-review__text”>
-						<p>”<?php esc_html_e( 'I found my Polo on a Tuesday, got finance sorted on my phone, and collected it in Sandton that Saturday. I never set foot in a dealership until I picked up the keys.', 'digicars' ); ?>”</p>
+				<blockquote class="home-review home-review--hero">
+					<p class="home-review__stars t-mono" aria-label="<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>" aria-hidden="false">★★★★★</p>
+					<div class="home-review__text">
+						<p>"<?php esc_html_e( 'I found my Polo on a Tuesday, got finance sorted on my phone, and collected it in Sandton that Saturday. I never set foot in a dealership until I picked up the keys.', 'digicars' ); ?>"</p>
 					</div>
-					<footer class=”home-review__who”>
+					<footer class="home-review__who">
 						<strong><?php esc_html_e( 'Thandeka M.', 'digicars' ); ?></strong>
-						<span class=”muted”> · <?php esc_html_e( 'Sandton', 'digicars' ); ?></span>
+						<span class="muted"> · <?php esc_html_e( 'Sandton', 'digicars' ); ?></span>
 					</footer>
 				</blockquote>
 
 				<?php /* Two stacked smaller reviews */ ?>
-				<div class=”home-reviews-stack”>
-					<blockquote class=”home-review”>
-						<p class=”home-review__stars t-mono” aria-label=”<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>” aria-hidden=”false”>★★★★★</p>
-						<div class=”home-review__text”>
-							<p>”<?php esc_html_e( 'Comparing the bakkies across brands in one place saved me weeks. The monthly figure on the listing was exactly what the bank came back with.', 'digicars' ); ?>”</p>
+				<div class="home-reviews-stack">
+					<blockquote class="home-review">
+						<p class="home-review__stars t-mono" aria-label="<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>" aria-hidden="false">★★★★★</p>
+						<div class="home-review__text">
+							<p>"<?php esc_html_e( 'Comparing the bakkies across brands in one place saved me weeks. The monthly figure on the listing was exactly what the bank came back with.', 'digicars' ); ?>"</p>
 						</div>
-						<footer class=”home-review__who”>
+						<footer class="home-review__who">
 							<strong><?php esc_html_e( 'Riaan van der Merwe', 'digicars' ); ?></strong>
-							<span class=”muted”> · <?php esc_html_e( 'Cape Town', 'digicars' ); ?></span>
+							<span class="muted"> · <?php esc_html_e( 'Cape Town', 'digicars' ); ?></span>
 						</footer>
 					</blockquote>
 
-					<blockquote class=”home-review”>
-						<p class=”home-review__stars t-mono” aria-label=”<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>” aria-hidden=”false”>★★★★★</p>
-						<div class=”home-review__text”>
-							<p>”<?php esc_html_e( 'As a first-time buyer I was nervous, but the Concierge shortlisted three cars in my budget and a consultant phoned me the next morning. Brilliant.', 'digicars' ); ?>”</p>
+					<blockquote class="home-review">
+						<p class="home-review__stars t-mono" aria-label="<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>" aria-hidden="false">★★★★★</p>
+						<div class="home-review__text">
+							<p>"<?php esc_html_e( 'As a first-time buyer I was nervous, but the Concierge shortlisted three cars in my budget and a consultant phoned me the next morning. Brilliant.', 'digicars' ); ?>"</p>
 						</div>
-						<footer class=”home-review__who”>
+						<footer class="home-review__who">
 							<strong><?php esc_html_e( 'Lerato K.', 'digicars' ); ?></strong>
-							<span class=”muted”> · <?php esc_html_e( 'Pretoria', 'digicars' ); ?></span>
+							<span class="muted"> · <?php esc_html_e( 'Pretoria', 'digicars' ); ?></span>
 						</footer>
 					</blockquote>
 				</div>

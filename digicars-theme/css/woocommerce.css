@@ -453,9 +453,13 @@
    -------------------------------------------------------------------------- */
 .post-list { list-style: none; padding: 0; margin: var(--s-5) 0 0; }
 .post-card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); }
-.post-card__media { display: block; overflow: hidden; }
-.post-card__media img { width: 100%; height: auto; display: block; aspect-ratio: 3 / 2; object-fit: cover; transition: transform 240ms var(--ease, ease); }
-.post-card:hover .post-card__media img { transform: scale(1.04); }
+.post-card__media { display: block; overflow: hidden; background: var(--carbon); }
+.post-card__media img,
+.post-card__media svg { width: 100%; height: auto; display: block; aspect-ratio: 3 / 2; object-fit: cover; transition: transform 240ms var(--ease, ease); }
+@media (hover: hover) and (pointer: fine) {
+  .post-card:hover .post-card__media img,
+  .post-card:hover .post-card__media svg { transform: scale(1.04); }
+}
 .post-card__body { padding: 18px 18px 22px; }
 .post-card__meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; font-size: 0.78rem; }
 @media (prefers-reduced-motion: reduce) { .post-card__media img { transition: none; } .post-card:hover .post-card__media img { transform: none; } }

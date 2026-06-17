@@ -25,12 +25,11 @@ if ( ! function_exists( 'digicars_default_nav' ) ) {
 		}
 
 		$links = array(
-			array( 'url' => $shop_url, 'label' => __( 'Cars in stock', 'digicars' ) ),
-			array( 'url' => '#', 'label' => __( 'Brands', 'digicars' ) ),
-			array( 'url' => home_url( '/finance' ), 'label' => __( 'Finance', 'digicars' ) ),
-			array( 'url' => home_url( '/sell' ), 'label' => __( 'Trade-in', 'digicars' ) ),
-			array( 'url' => home_url( '/book-a-service' ), 'label' => __( 'Book a service', 'digicars' ) ),
-			array( 'url' => home_url( '/about' ), 'label' => __( 'About', 'digicars' ) ),
+			array( 'url' => $shop_url,                    'label' => __( 'Cars in stock', 'digicars' ) ),
+			array( 'url' => home_url( '/finance' ),       'label' => __( 'Finance', 'digicars' ) ),
+			array( 'url' => home_url( '/sell' ),          'label' => __( 'Trade-in', 'digicars' ) ),
+			array( 'url' => home_url( '/book-a-service' ),'label' => __( 'Book a service', 'digicars' ) ),
+			array( 'url' => home_url( '/about' ),         'label' => __( 'About', 'digicars' ) ),
 		);
 
 		echo '<ul class="nav">';
@@ -57,7 +56,25 @@ if ( ! function_exists( 'digicars_default_nav' ) ) {
 <a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'digicars' ); ?></a>
 
 <div class="notice-bar" role="region" aria-label="<?php esc_attr_e( 'Announcements', 'digicars' ); ?>">
-	<?php esc_html_e( 'Finance from major SA banks · Every vehicle verified · Fueled by passion. Driven by technology.', 'digicars' ); ?>
+	<div class="notice-bar__track" aria-hidden="true">
+		<span><?php esc_html_e( 'Finance from major SA banks', 'digicars' ); ?></span>
+		<span class="notice-bar__sep">&#x2022;</span>
+		<span><?php esc_html_e( 'Every vehicle verified', 'digicars' ); ?></span>
+		<span class="notice-bar__sep">&#x2022;</span>
+		<span><?php esc_html_e( '23 000+ happy South African drivers', 'digicars' ); ?></span>
+		<span class="notice-bar__sep">&#x2022;</span>
+		<span><?php esc_html_e( 'Digital-first automotive showroom', 'digicars' ); ?></span>
+		<span class="notice-bar__sep">&#x2022;</span>
+		<span><?php esc_html_e( 'Finance from major SA banks', 'digicars' ); ?></span>
+		<span class="notice-bar__sep">&#x2022;</span>
+		<span><?php esc_html_e( 'Every vehicle verified', 'digicars' ); ?></span>
+		<span class="notice-bar__sep">&#x2022;</span>
+		<span><?php esc_html_e( '23 000+ happy South African drivers', 'digicars' ); ?></span>
+		<span class="notice-bar__sep">&#x2022;</span>
+		<span><?php esc_html_e( 'Digital-first automotive showroom', 'digicars' ); ?></span>
+		<span class="notice-bar__sep">&#x2022;</span>
+	</div>
+	<p class="notice-bar__static sr-only"><?php esc_html_e( 'Finance from major SA banks · Every vehicle verified · Digital-first automotive showroom', 'digicars' ); ?></p>
 </div>
 
 <header class="site-header" data-site-header>

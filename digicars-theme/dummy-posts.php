@@ -95,6 +95,7 @@ $digicars_posts = array(
 		'slug'    => 'first-car-buying-guide-south-africa',
 		'title'   => 'Buying your first car in South Africa: a no-nonsense guide',
 		'excerpt' => 'From budgeting beyond the sticker price to getting pre-approved finance, here is how to buy your first car without the dealership runaround.',
+		'image'   => 'images/blog/ct-buying.svg',
 		'tags'    => array( 'First Car', 'Finance', 'Buying Guide' ),
 		'content' => '<p>Your first car is a milestone, but it is also the moment most South Africans first run into the real cost of motoring. The sticker price is only the beginning. Before you fall in love with anything on a forecourt, work out what you can genuinely afford every month — not just the instalment, but insurance, fuel, tyres and the inevitable service.</p>
 <p>A good rule of thumb is to keep your total transport cost under about 25% of your take-home pay. If a R4 500 instalment leaves you eating two-minute noodles by the 20th, it is the wrong car. Use the affordability calculator to model a few scenarios, then get pre-qualified for finance before you shop. Walking in pre-approved changes the whole conversation: you know your ceiling and you can negotiate on the car, not on your nerves.</p>
@@ -108,6 +109,7 @@ $digicars_posts = array(
 		'slug'    => 'ev-ownership-south-africa-loadshedding',
 		'title'   => 'Living with an electric car in South Africa, loadshedding and all',
 		'excerpt' => 'Range anxiety, charging at home during stage 4, and whether the maths actually works. An honest look at EV ownership in SA.',
+		'image'   => 'images/blog/ct-ev.svg',
 		'tags'    => array( 'EV', 'Ownership', 'Loadshedding' ),
 		'content' => '<p>Electric cars have quietly become a real option in South Africa, and the question we hear most is blunt: does it actually work here, with our electricity? The honest answer is yes, with a bit of planning — and for many commuters the running-cost saving is hard to argue with.</p>
 <p>Most EV owners charge at home overnight, when tariffs are lowest and the car is parked anyway. A modern EV with 400km of real-world range easily covers a week of city driving on a couple of charges. Loadshedding is less of a crisis than the headlines suggest: you simply charge in the windows when the power is on, and many owners pair the car with home solar or a battery so the schedule barely registers.</p>
@@ -121,6 +123,7 @@ $digicars_posts = array(
 		'slug'    => 'car-finance-tips-balloon-payments',
 		'title'   => 'Car finance decoded: deposits, balloons and the deal behind the deal',
 		'excerpt' => 'Balloon payments, residuals and that tempting low monthly instalment — what the finance fine print really means for your pocket.',
+		'image'   => 'images/blog/ct-finance.svg',
 		'tags'    => array( 'Finance', 'Buying Guide', 'Money' ),
 		'content' => '<p>The advertised monthly instalment is the most quoted and least understood number in car buying. Dealers can make almost any car look affordable by stretching the term and parking a balloon at the end. Understanding the levers behind that figure is the single best way to avoid overpaying.</p>
 <h2>The deposit</h2>
@@ -135,6 +138,7 @@ $digicars_posts = array(
 		'slug'    => 'chinese-brands-changing-sa-new-car-market',
 		'title'   => 'How Chery, Omoda and GWM rewrote the SA new-car price list',
 		'excerpt' => 'A wave of Chinese brands has reset what buyers expect for their money. Here is what it means if you are shopping for a new car right now.',
+		'image'   => 'images/blog/ct-market.svg',
 		'tags'    => array( 'Industry', 'New Models', 'Buying Guide' ),
 		'content' => '<p>Walk into any new-car conversation in South Africa today and a name like Chery, Omoda, Haval or GWM comes up within minutes. A few years ago these brands were a curiosity. Now they are reshaping the price list — and forcing the established players to sharpen their pencils.</p>
 <p>The pitch is simple and effective: a lot of car for the money. Panoramic sunroofs, big touchscreens, driver-assistance kit and lengthy warranties that used to live in premium territory now arrive on sensibly priced SUVs. For buyers who were being squeezed out of the new-car market by rising prices, that value has been a genuine lifeline.</p>
@@ -145,47 +149,42 @@ $digicars_posts = array(
 );
 
 /* -------------------------------------------------------------------------
- * Optional shared featured image — sideloaded best-effort from images/.
- * Resolved once, reused across posts. Missing files are skipped silently.
+ * Per-post featured image helper — sideloads the file at $path best-effort.
+ * Returns the attachment ID on success, 0 on failure.
  * ---------------------------------------------------------------------- */
 
-$digicars_blog_thumb_id = 0;
-if ( function_exists( 'get_theme_file_path' ) ) {
-	$digicars_thumb_candidates = array(
-		get_theme_file_path( 'images/blog/car-torque.jpg' ),
-		get_theme_file_path( 'images/hero/hero-showroom.svg' ),
-		get_theme_file_path( 'images/vehicles/_default.svg' ),
-	);
-	foreach ( $digicars_thumb_candidates as $digicars_thumb_path ) {
-		if ( ! $digicars_thumb_path || ! file_exists( $digicars_thumb_path ) ) {
-			continue;
+if ( ! function_exists( 'digicars_sideload_blog_image' ) ) {
+	function digicars_sideload_blog_image( string $path, string $title ): int {
+		if ( ! file_exists( $path ) ) {
+			return 0;
 		}
 		if ( ! function_exists( 'wp_generate_attachment_metadata' ) && file_exists( ABSPATH . 'wp-admin/includes/image.php' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/image.php';
 		}
 		if ( ! function_exists( 'wp_insert_attachment' ) || ! function_exists( 'wp_upload_bits' ) ) {
-			break; // Helpers unavailable; skip thumbnails silently.
+			return 0;
 		}
-		$digicars_upload = wp_upload_bits( basename( $digicars_thumb_path ), null, file_get_contents( $digicars_thumb_path ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-		if ( empty( $digicars_upload['error'] ) && ! empty( $digicars_upload['file'] ) ) {
-			$digicars_filetype = wp_check_filetype( $digicars_upload['file'], null );
-			$digicars_attach   = wp_insert_attachment(
-				array(
-					'post_mime_type' => $digicars_filetype['type'] ? $digicars_filetype['type'] : 'image/jpeg',
-					'post_title'     => 'Car Torque',
-					'post_content'   => '',
-					'post_status'    => 'inherit',
-				),
-				$digicars_upload['file']
-			);
-			if ( $digicars_attach && ! is_wp_error( $digicars_attach ) ) {
-				if ( function_exists( 'wp_generate_attachment_metadata' ) ) {
-					wp_update_attachment_metadata( $digicars_attach, wp_generate_attachment_metadata( $digicars_attach, $digicars_upload['file'] ) );
-				}
-				$digicars_blog_thumb_id = (int) $digicars_attach;
-			}
+		$upload = wp_upload_bits( basename( $path ), null, file_get_contents( $path ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		if ( ! empty( $upload['error'] ) || empty( $upload['file'] ) ) {
+			return 0;
 		}
-		break; // Only attempt one candidate.
+		$filetype = wp_check_filetype( $upload['file'], null );
+		$attach   = wp_insert_attachment(
+			array(
+				'post_mime_type' => $filetype['type'] ?: 'image/svg+xml',
+				'post_title'     => $title,
+				'post_content'   => '',
+				'post_status'    => 'inherit',
+			),
+			$upload['file']
+		);
+		if ( ! $attach || is_wp_error( $attach ) ) {
+			return 0;
+		}
+		if ( function_exists( 'wp_generate_attachment_metadata' ) ) {
+			wp_update_attachment_metadata( $attach, wp_generate_attachment_metadata( $attach, $upload['file'] ) );
+		}
+		return (int) $attach;
 	}
 }
 
@@ -240,9 +239,20 @@ foreach ( $digicars_posts as $p ) {
 		wp_set_post_terms( $post_id, $p['tags'], 'post_tag', false );
 	}
 
-	// Featured image (best-effort, shared).
-	if ( $digicars_blog_thumb_id > 0 ) {
-		set_post_thumbnail( $post_id, $digicars_blog_thumb_id );
+	// Featured image — per-post SVG, falls back to hero SVG.
+	if ( function_exists( 'get_theme_file_path' ) && function_exists( 'digicars_sideload_blog_image' ) ) {
+		$digicars_img_candidates = array();
+		if ( ! empty( $p['image'] ) ) {
+			$digicars_img_candidates[] = get_theme_file_path( $p['image'] );
+		}
+		$digicars_img_candidates[] = get_theme_file_path( 'images/hero/hero-showroom.svg' );
+		foreach ( $digicars_img_candidates as $digicars_img_path ) {
+			$thumb_id = digicars_sideload_blog_image( $digicars_img_path, $p['title'] );
+			if ( $thumb_id > 0 ) {
+				set_post_thumbnail( $post_id, $thumb_id );
+				break;
+			}
+		}
 	}
 
 	++$digicars_created;
