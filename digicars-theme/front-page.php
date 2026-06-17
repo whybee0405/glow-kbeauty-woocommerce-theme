@@ -24,71 +24,93 @@ $digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 <main id="main" class="site-main">
 
 	<?php /* 1 ---------------------------------------------------- Concierge hero */ ?>
-	<section class="section home-hero surface-carbon" data-reveal>
-		<div
-			class="home-hero__bg"
-			style="background-image:url('<?php echo esc_url( $digicars_hero ); ?>'); background-color:var(--carbon);"
-			aria-hidden="true"
-		></div>
+	<?php /* Full-viewport centered design — the Concierge IS the hero. */ ?>
+	<section class="home-hero surface-carbon">
 
-		<div class="container">
-			<div class="hero-split">
-
-				<div class="hero-split__copy stack">
-					<p class="eyebrow eyebrow--volt"><?php esc_html_e( 'Driven by technology', 'digicars' ); ?></p>
-					<h1 class="t-hero"><?php esc_html_e( 'Find your next car the smart way.', 'digicars' ); ?></h1>
-					<p class="t-lead"><?php esc_html_e( 'Browse thousands of verified vehicles from South Africa’s best dealers, get a real monthly figure before you commit, and let the Concierge shortlist cars that actually fit your life.', 'digicars' ); ?></p>
-
-					<div class="cluster home-hero__cta">
-						<a class="btn btn--signal btn--lg" href="<?php echo esc_url( $digicars_shop ); ?>"><?php esc_html_e( 'Browse all stock', 'digicars' ); ?></a>
-						<button type="button" class="btn btn--outline btn--lg" data-concierge-open><?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?></button>
-					</div>
-
-					<p class="t-mono muted home-hero__tagline"><?php esc_html_e( 'Fueled by passion. Driven by technology.', 'digicars' ); ?></p>
-				</div>
-
-				<div class="hero-split__stage home-hero__stage">
-					<div class="concierge" data-concierge-home>
-						<p class="eyebrow eyebrow--signal"><?php esc_html_e( 'The Concierge', 'digicars' ); ?></p>
-						<p class="t-3 home-hero__stage-title"><?php esc_html_e( 'Tell us how you drive.', 'digicars' ); ?></p>
-
-						<label class="sr-only" for="home-concierge-input"><?php esc_html_e( 'Describe what you’re looking for', 'digicars' ); ?></label>
-						<input
-							id="home-concierge-input"
-							type="text"
-							class="concierge__input"
-							autocomplete="off"
-							placeholder="<?php esc_attr_e( 'Tell us how you drive — budget, family, first car…', 'digicars' ); ?>"
-						>
-
-						<div class="concierge__chips cluster">
-							<?php
-							if ( function_exists( 'digicars_concierge_chips' ) ) :
-								foreach ( digicars_concierge_chips() as $digicars_chip_slug => $digicars_chip ) :
-									?>
-									<button
-										type="button"
-										class="chip"
-										data-concierge-chip="<?php echo esc_attr( $digicars_chip_slug ); ?>"
-										aria-pressed="false"
-									><?php echo esc_html( $digicars_chip['label'] ); ?></button>
-									<?php
-								endforeach;
-							endif;
-							?>
-						</div>
-
-						<p class="concierge__count t-mono"><?php esc_html_e( 'Ask to see matches', 'digicars' ); ?></p>
-						<div class="concierge__stage" aria-live="polite"></div>
-
-						<noscript>
-							<a class="btn btn--signal btn--block" href="<?php echo esc_url( $digicars_shop ); ?>"><?php esc_html_e( 'Browse all stock', 'digicars' ); ?></a>
-						</noscript>
-					</div>
-				</div>
-
-			</div>
+		<?php /* Animated background: dot grid + dual glow */ ?>
+		<div class="home-hero__bg" aria-hidden="true">
+			<div class="home-hero__dots"></div>
+			<div class="home-hero__glow"></div>
 		</div>
+
+		<div class="container home-hero__inner">
+
+			<?php /* Headline */ ?>
+			<div class="home-hero__headline">
+				<p class="eyebrow eyebrow--volt home-hero__eyebrow"><?php esc_html_e( 'Digital-first automotive showroom', 'digicars' ); ?></p>
+				<h1 class="t-hero home-hero__title">
+					<?php esc_html_e( 'Find the car', 'digicars' ); ?>
+					<br class="home-hero__break">
+					<?php esc_html_e( 'that fits your life.', 'digicars' ); ?>
+				</h1>
+				<p class="t-lead home-hero__lead"><?php esc_html_e( 'Browse verified vehicles from South Africa\'s best dealers, get a real monthly figure, and let the Concierge shortlist cars that actually match how you drive.', 'digicars' ); ?></p>
+			</div>
+
+			<?php /* Concierge — input stays inside .concierge so concierge.js finds it */ ?>
+			<div class="home-hero__search-wrap">
+				<div class="concierge" data-concierge-home>
+					<label class="sr-only" for="home-concierge-input"><?php esc_html_e( 'Describe what you\'re looking for', 'digicars' ); ?></label>
+					<input
+						id="home-concierge-input"
+						type="text"
+						class="concierge__input"
+						autocomplete="off"
+						placeholder="<?php esc_attr_e( 'Family SUV under R6k pm, first car, bakkie for work…', 'digicars' ); ?>"
+					>
+
+					<div class="concierge__chips home-hero__chips cluster">
+						<?php
+						if ( function_exists( 'digicars_concierge_chips' ) ) :
+							foreach ( digicars_concierge_chips() as $digicars_chip_slug => $digicars_chip ) :
+								?>
+								<button
+									type="button"
+									class="chip"
+									data-concierge-chip="<?php echo esc_attr( $digicars_chip_slug ); ?>"
+									aria-pressed="false"
+								><?php echo esc_html( $digicars_chip['label'] ); ?></button>
+								<?php
+							endforeach;
+						endif;
+						?>
+					</div>
+
+					<div class="home-hero__results">
+						<p class="concierge__count t-mono"><?php esc_html_e( 'Select a chip or type to see matches', 'digicars' ); ?></p>
+						<div class="concierge__stage" aria-live="polite"></div>
+					</div>
+
+					<noscript>
+						<a class="btn btn--signal btn--block" href="<?php echo esc_url( $digicars_shop ); ?>"><?php esc_html_e( 'Browse all stock', 'digicars' ); ?></a>
+					</noscript>
+				</div>
+
+				<?php /* Submit button — outside .concierge so it is NOT cloned into the launcher modal */ ?>
+				<button type="button" class="home-hero__search-submit" aria-label="<?php esc_attr_e( 'Search', 'digicars' ); ?>">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<line x1="5" y1="12" x2="19" y2="12"/>
+						<polyline points="12 5 19 12 12 19"/>
+					</svg>
+				</button>
+			</div>
+
+			<?php /* Secondary CTAs */ ?>
+			<div class="cluster home-hero__cta">
+				<a class="btn btn--outline btn--lg" href="<?php echo esc_url( $digicars_shop ); ?>"><?php esc_html_e( 'Browse all stock', 'digicars' ); ?></a>
+				<span class="home-hero__or t-mono" aria-hidden="true"><?php esc_html_e( 'or', 'digicars' ); ?></span>
+				<a class="link-arrow" href="<?php echo esc_url( $digicars_fin ); ?>"><?php esc_html_e( 'Check affordability', 'digicars' ); ?></a>
+			</div>
+
+		</div>
+
+		<?php /* Scroll indicator */ ?>
+		<div class="home-hero__scroll-indicator" aria-hidden="true">
+			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<line x1="12" y1="5" x2="12" y2="19"/>
+				<polyline points="19 12 12 19 5 12"/>
+			</svg>
+		</div>
+
 	</section>
 
 	<?php /* 2 -------------------------------------------------- Browse by body type */ ?>
@@ -323,7 +345,7 @@ $digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 				<div class="home-finance__copy stack">
 					<p class="eyebrow eyebrow--volt"><?php esc_html_e( 'Finance first', 'digicars' ); ?></p>
 					<h2 class="t-1"><?php esc_html_e( 'Know what you can afford first.', 'digicars' ); ?></h2>
-					<p class="t-lead"><?php esc_html_e( 'Set your deposit, term and monthly comfort zone, and we’ll show you only the cars that fit — so you shop with a real budget, not a wishlist.', 'digicars' ); ?></p>
+					<p class="t-lead"><?php esc_html_e( 'Set your deposit, term and monthly comfort zone, and we\'ll show you only the cars that fit — so you shop with a real budget, not a wishlist.', 'digicars' ); ?></p>
 					<div class="cluster">
 						<a class="btn btn--signal btn--lg" href="<?php echo esc_url( $digicars_fin ); ?>"><?php esc_html_e( 'Check affordability', 'digicars' ); ?></a>
 						<a class="link-arrow" href="<?php echo esc_url( add_query_arg( array( 'search_by' => 'monthly' ), $digicars_shop ) ); ?>"><?php esc_html_e( 'Shop by monthly', 'digicars' ); ?></a>
@@ -339,33 +361,56 @@ $digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 	</section>
 
 	<?php /* 8 --------------------------------------------------------- Reviews */ ?>
-	<section class="section" data-reveal>
-		<div class="container">
-			<div class="section-head">
-				<div class="section-head__copy stack-sm">
-					<p class="eyebrow"><?php esc_html_e( 'From our customers', 'digicars' ); ?></p>
-					<h2 class="t-1"><?php esc_html_e( 'Real people. Real keys collected.', 'digicars' ); ?></h2>
+	<section class=”section” data-reveal>
+		<div class=”container”>
+			<div class=”section-head”>
+				<div class=”section-head__copy stack-sm”>
+					<p class=”eyebrow”><?php esc_html_e( 'From our customers', 'digicars' ); ?></p>
+					<h2 class=”t-1”><?php esc_html_e( 'Real people. Real keys collected.', 'digicars' ); ?></h2>
 				</div>
-				<p class="t-mono muted home-reviews__score"><?php esc_html_e( '4.8 / 5 · 2 300+ reviews', 'digicars' ); ?></p>
+				<p class=”t-mono muted home-reviews__score”><?php esc_html_e( '4.8 / 5 · 2 300+ reviews', 'digicars' ); ?></p>
 			</div>
 
-			<ul class="grid home-reviews" style="--cols:3;">
-				<li class="home-review stack">
-					<p class="t-mono home-review__rating" aria-label="<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>">★★★★★</p>
-					<blockquote class="home-review__quote">“<?php esc_html_e( 'I found my Polo on a Tuesday, got finance sorted on my phone, and collected it in Sandton that Saturday. I never set foot in a dealership until I picked up the keys.', 'digicars' ); ?>”</blockquote>
-					<p class="home-review__who"><strong><?php esc_html_e( 'Thandeka M.', 'digicars' ); ?></strong><span class="muted"> · <?php esc_html_e( 'Sandton', 'digicars' ); ?></span></p>
-				</li>
-				<li class="home-review stack">
-					<p class="t-mono home-review__rating" aria-label="<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>">★★★★★</p>
-					<blockquote class="home-review__quote">“<?php esc_html_e( 'Comparing the bakkies across brands in one place saved me weeks. The monthly figure on the listing was exactly what the bank came back with.', 'digicars' ); ?>”</blockquote>
-					<p class="home-review__who"><strong><?php esc_html_e( 'Riaan van der Merwe', 'digicars' ); ?></strong><span class="muted"> · <?php esc_html_e( 'Cape Town', 'digicars' ); ?></span></p>
-				</li>
-				<li class="home-review stack">
-					<p class="t-mono home-review__rating" aria-label="<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>">★★★★★</p>
-					<blockquote class="home-review__quote">“<?php esc_html_e( 'As a first-time buyer I was nervous, but the Concierge shortlisted three cars in my budget and a consultant phoned me the next morning. Brilliant.', 'digicars' ); ?>”</blockquote>
-					<p class="home-review__who"><strong><?php esc_html_e( 'Lerato K.', 'digicars' ); ?></strong><span class="muted"> · <?php esc_html_e( 'Pretoria', 'digicars' ); ?></span></p>
-				</li>
-			</ul>
+			<div class=”home-reviews-layout”>
+
+				<?php /* Featured large review */ ?>
+				<blockquote class=”home-review home-review--hero”>
+					<p class=”home-review__stars t-mono” aria-label=”<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>” aria-hidden=”false”>★★★★★</p>
+					<div class=”home-review__text”>
+						<p>”<?php esc_html_e( 'I found my Polo on a Tuesday, got finance sorted on my phone, and collected it in Sandton that Saturday. I never set foot in a dealership until I picked up the keys.', 'digicars' ); ?>”</p>
+					</div>
+					<footer class=”home-review__who”>
+						<strong><?php esc_html_e( 'Thandeka M.', 'digicars' ); ?></strong>
+						<span class=”muted”> · <?php esc_html_e( 'Sandton', 'digicars' ); ?></span>
+					</footer>
+				</blockquote>
+
+				<?php /* Two stacked smaller reviews */ ?>
+				<div class=”home-reviews-stack”>
+					<blockquote class=”home-review”>
+						<p class=”home-review__stars t-mono” aria-label=”<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>” aria-hidden=”false”>★★★★★</p>
+						<div class=”home-review__text”>
+							<p>”<?php esc_html_e( 'Comparing the bakkies across brands in one place saved me weeks. The monthly figure on the listing was exactly what the bank came back with.', 'digicars' ); ?>”</p>
+						</div>
+						<footer class=”home-review__who”>
+							<strong><?php esc_html_e( 'Riaan van der Merwe', 'digicars' ); ?></strong>
+							<span class=”muted”> · <?php esc_html_e( 'Cape Town', 'digicars' ); ?></span>
+						</footer>
+					</blockquote>
+
+					<blockquote class=”home-review”>
+						<p class=”home-review__stars t-mono” aria-label=”<?php esc_attr_e( '5 out of 5', 'digicars' ); ?>” aria-hidden=”false”>★★★★★</p>
+						<div class=”home-review__text”>
+							<p>”<?php esc_html_e( 'As a first-time buyer I was nervous, but the Concierge shortlisted three cars in my budget and a consultant phoned me the next morning. Brilliant.', 'digicars' ); ?>”</p>
+						</div>
+						<footer class=”home-review__who”>
+							<strong><?php esc_html_e( 'Lerato K.', 'digicars' ); ?></strong>
+							<span class=”muted”> · <?php esc_html_e( 'Pretoria', 'digicars' ); ?></span>
+						</footer>
+					</blockquote>
+				</div>
+
+			</div>
 		</div>
 	</section>
 
@@ -415,8 +460,8 @@ $digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 	<section class="section surface-carbon home-closing" data-reveal>
 		<div class="container stack">
 			<p class="eyebrow eyebrow--volt"><?php esc_html_e( 'Ready when you are', 'digicars' ); ?></p>
-			<h2 class="t-hero"><?php esc_html_e( 'Let’s find the one.', 'digicars' ); ?></h2>
-			<p class="t-lead"><?php esc_html_e( 'Tell the Concierge how you drive, or dive straight into the stock. Either way, you’re minutes from your next car.', 'digicars' ); ?></p>
+			<h2 class="t-hero"><?php esc_html_e( 'Let\'s find the one.', 'digicars' ); ?></h2>
+			<p class="t-lead"><?php esc_html_e( 'Tell the Concierge how you drive, or dive straight into the stock. Either way, you\'re minutes from your next car.', 'digicars' ); ?></p>
 			<div class="cluster">
 				<button type="button" class="btn btn--signal btn--lg" data-concierge-open><?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?></button>
 				<a class="btn btn--outline btn--lg" href="<?php echo esc_url( $digicars_shop ); ?>"><?php esc_html_e( 'Browse all stock', 'digicars' ); ?></a>

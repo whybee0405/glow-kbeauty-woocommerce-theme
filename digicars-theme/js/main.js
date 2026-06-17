@@ -526,6 +526,43 @@
     });
   }
 
+  /* ---------------------------------------------------------- 3D card tilt
+   * Adds a subtle perspective tilt on mouse-move for vehicle cards. Disabled
+   * for reduced-motion and touch-only devices.                               */
+  function initCardTilt() {
+    if (reduceMotion) return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    $all('.vehicle-card').forEach(function (card) {
+      card.addEventListener('mouseenter', function () {
+        card.style.willChange = 'transform';
+        // Disable the CSS transform transition while tracking the mouse —
+        // direct JS updates must be instant, not eased.
+        card.style.transition = 'border-color ' + getComputedStyle(card).getPropertyValue('--dur') + ' ease, box-shadow ' + getComputedStyle(card).getPropertyValue('--dur') + ' ease';
+      });
+
+      card.addEventListener('mousemove', function (e) {
+        var rect = card.getBoundingClientRect();
+        var x = ((e.clientX - rect.left) / rect.width  - 0.5) * 2; // -1 → 1
+        var y = ((e.clientY - rect.top)  / rect.height - 0.5) * 2; // -1 → 1
+        card.style.transform = [
+          'perspective(700px)',
+          'rotateY(' + (x * 5) + 'deg)',
+          'rotateX(' + (-y * 3.5) + 'deg)',
+          'translateZ(6px)'
+        ].join(' ');
+      });
+
+      card.addEventListener('mouseleave', function () {
+        // Restore transition for the snap-back, then hand back to CSS.
+        card.style.transition = 'transform 350ms cubic-bezier(0.23,1,0.32,1), border-color 180ms ease, box-shadow 180ms ease';
+        card.style.transform = '';
+        card.style.willChange = '';
+        window.setTimeout(function () { card.style.transition = ''; }, 360);
+      });
+    });
+  }
+
   /* ------------------------------------------------------------------ boot */
   function init() {
     initHeader();
@@ -536,6 +573,7 @@
     initCompare();
     initEnquiry();
     initEnquiryForms();
+    initCardTilt();
   }
 
   if (document.readyState === 'loading') {
