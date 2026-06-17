@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <pattern id="dgGrid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#14161A" stroke-width="1" stroke-opacity="0.06"/>
+      <path d="M0 24H48M24 0V48" fill="none" stroke="#14161A" stroke-width="0.5" stroke-opacity="0.035"/>
+      <circle cx="0" cy="0" r="1" fill="#F4561D" fill-opacity="0.10"/>
+      <circle cx="48" cy="0" r="1" fill="#F4561D" fill-opacity="0.10"/>
+      <circle cx="0" cy="48" r="1" fill="#F4561D" fill-opacity="0.10"/>
+      <circle cx="48" cy="48" r="1" fill="#F4561D" fill-opacity="0.10"/>
+    </pattern>
+  </defs>
+  <rect width="48" height="48" fill="url(#dgGrid)"/>
+</svg>
