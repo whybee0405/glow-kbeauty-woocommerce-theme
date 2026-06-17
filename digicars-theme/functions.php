@@ -1486,3 +1486,10 @@ $digicars_seo = get_theme_file_path( 'inc/seo.php' );
 if ( file_exists( $digicars_seo ) ) {
 	require_once $digicars_seo;
 }
+
+if ( is_admin() ) {
+	$digicars_import = get_theme_file_path( 'inc/admin-import.php' );
+	if ( file_exists( $digicars_import ) ) {
+		require_once $digicars_import;
+	}
+}
