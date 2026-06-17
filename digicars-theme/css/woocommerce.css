@@ -486,3 +486,131 @@
 .search-form__row { gap: var(--s-2); align-items: stretch; flex-wrap: nowrap; }
 .search-form__input { flex: 1 1 auto; min-width: 0; }
 .search-form .btn { flex: 0 0 auto; }
+
+
+/* ==========================================================================
+   HOMEPAGE (front-page.php) — `.home-*` namespace
+   --------------------------------------------------------------------------
+   Section-specific helpers for the signature homepage. Everything else reuses
+   style.css primitives (.container, .section, .hero-split, .grid, .chip …).
+   ========================================================================== */
+
+/* --- 1 · Concierge hero ---------------------------------------------------- */
+.home-hero { position: relative; isolation: isolate; overflow: hidden; }
+.home-hero__bg {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background-size: cover;
+	background-position: center;
+	opacity: 0.32;
+}
+.home-hero__bg::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(105deg, var(--carbon) 32%, rgba(20, 22, 26, 0.65) 100%);
+}
+.home-hero .hero-split__copy .t-hero { color: var(--paper); }
+.home-hero__tagline { margin-top: var(--s-2); }
+
+.home-hero__stage {
+	background: var(--paper);
+	color: var(--carbon);
+	padding: clamp(var(--s-5), 3vw, var(--s-7));
+	box-shadow: var(--shadow-3);
+}
+.home-hero__stage-title { margin: var(--s-2) 0 var(--s-4); }
+.home-hero__stage .concierge__chips { margin-top: var(--s-4); }
+.home-hero__stage .concierge__stage:empty { margin-top: 0; }
+
+/* --- 3 · Budget cards ------------------------------------------------------ */
+.home-budget {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+	padding: var(--s-5);
+	border: 1px solid var(--line);
+	border-radius: var(--r-3);
+	background: var(--paper);
+	transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.home-budget:hover { border-color: var(--carbon); transform: translateY(-2px); box-shadow: var(--shadow-2); }
+.home-budget__label { margin: 0; }
+.home-budget__go { margin-top: auto; padding-top: var(--s-3); font-size: 0.92rem; }
+
+/* --- 5 · Digital-first trust ---------------------------------------------- */
+.home-trust__grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(var(--s-6), 5vw, var(--s-9)); align-items: start; }
+.home-trust__lead { position: sticky; top: 96px; }
+.home-trust__points {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--s-6);
+}
+.home-trust__point { padding-top: var(--s-4); border-top: 2px solid var(--signal); }
+.home-trust__num { color: var(--signal); font-size: 0.85rem; letter-spacing: 0.06em; }
+.home-trust__point h3 { color: var(--paper); }
+
+/* --- 6 · Brands strip ------------------------------------------------------ */
+.home-brands { list-style: none; margin: 0; padding: 0; gap: var(--s-2); }
+.home-brand {
+	display: inline-flex;
+	align-items: center;
+	padding: 10px 18px;
+	border: 1px solid var(--line);
+	border-radius: var(--r-pill);
+	font-family: var(--font-display);
+	font-weight: 700;
+	font-size: 0.95rem;
+	letter-spacing: -0.01em;
+	color: var(--carbon);
+	transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.home-brand:hover { border-color: var(--signal); color: var(--signal); }
+
+/* --- 7 · Finance teaser ---------------------------------------------------- */
+.home-finance { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: clamp(var(--s-6), 5vw, var(--s-8)); align-items: center; }
+.home-finance__facts { list-style: none; margin: 0; padding: var(--s-5); border-left: 2px solid var(--carbon); }
+.home-finance__facts li { display: flex; flex-direction: column; gap: 2px; font-size: 0.95rem; }
+.home-finance__fact-k {
+	font-size: 0.72rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: var(--slate);
+}
+
+/* --- 8 · Reviews ----------------------------------------------------------- */
+.home-reviews { list-style: none; margin: 0; padding: 0; }
+.home-review {
+	padding: var(--s-6);
+	border: 1px solid var(--line);
+	border-radius: var(--r-3);
+	background: var(--paper);
+}
+.home-review__rating { color: var(--signal); font-size: 1rem; letter-spacing: 0.1em; }
+.home-review__quote { font-size: 1.05rem; line-height: 1.5; color: var(--carbon); }
+.home-review__who { margin-top: auto; }
+.home-reviews__score { white-space: nowrap; }
+
+/* --- 10 · Closing CTA ------------------------------------------------------ */
+.home-closing .t-hero { color: var(--paper); max-width: 16ch; }
+
+/* --- Responsive ------------------------------------------------------------ */
+@media (max-width: 1100px) {
+	.home-trust__grid { grid-template-columns: 1fr; }
+	.home-trust__lead { position: static; }
+	.home-finance { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+	.home-trust__points { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+	.home-budgets { --cols: 2; }
+	.home-reviews { --cols: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.home-budget:hover { transform: none; }
+}

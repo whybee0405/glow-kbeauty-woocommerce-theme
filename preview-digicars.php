@@ -196,10 +196,125 @@ function get_term_by( ...$a ) { return false; }
 function get_queried_object() { return null; }
 function setup_postdata( ...$a ) {}
 function wp_reset_postdata() {}
-function get_post( $id = null ) { return null; }
+function get_post( $id = null ) {
+	if ( is_object( $id ) ) { return $id; }
+	if ( null === $id ) {
+		$cur = $GLOBALS['digicars_current_post'] ?? null;
+		return $cur ? (object) $cur : null;
+	}
+	$id = (int) $id;
+	return isset( $GLOBALS['digicars_post_store'][ $id ] ) ? (object) $GLOBALS['digicars_post_store'][ $id ] : null;
+}
 function the_title() {}
-function get_the_title( $id = 0 ) { return ''; }
+function get_the_title( $id = 0 ) { $id = (int) $id; return $GLOBALS['digicars_post_store'][ $id ]['title'] ?? ( $GLOBALS['digicars_current_post']['title'] ?? '' ); }
 function get_the_ID() { return $GLOBALS['digicars_current_id'] ?? 0; }
+
+/* -------------------------------------------------------------------------
+ * Native-post (Car Torque) stubs + a minimal WP_Query for front-page.php.
+ *
+ * front-page.php runs `new WP_Query(['post_type'=>'post'...])` and renders each
+ * post via digicars_post_card(). We seed 3 dummy posts and back the loop tags
+ * (the_post / get_the_title / get_the_date / get_the_category / get_the_excerpt /
+ * thumbnail helpers) against $GLOBALS['digicars_current_post'].
+ * ---------------------------------------------------------------------- */
+$GLOBALS['digicars_post_store']   = array();
+$GLOBALS['digicars_current_post'] = null;
+
+function digicars_preview_seed_posts() {
+	$GLOBALS['digicars_post_store'] = array(
+		201 => array(
+			'ID'       => 201,
+			'title'    => 'New vs demo vs used: which is the smart buy in 2026?',
+			'date'     => '12 June 2026',
+			'excerpt'  => 'Demo models can shave tens of thousands off the sticker while still feeling box-fresh. Here is how to weigh the trade-offs against warranty and finance.',
+			'category' => 'Car Torque',
+			'content'  => str_repeat( 'word ', 540 ),
+		),
+		202 => array(
+			'ID'       => 202,
+			'title'    => 'EV running costs in South Africa: the real numbers',
+			'date'     => '6 June 2026',
+			'excerpt'  => 'Load-shedding, home charging and the price of a kilowatt-hour — we crunch what an electric SUV actually costs to run on the Highveld.',
+			'category' => 'Car Torque',
+			'content'  => str_repeat( 'word ', 720 ),
+		),
+		203 => array(
+			'ID'       => 203,
+			'title'    => 'First-car buyer’s checklist: from budget to keys',
+			'date'     => '1 June 2026',
+			'excerpt'  => 'A no-nonsense walkthrough for first-time buyers — setting a monthly budget, getting pre-approved and avoiding the classic rookie mistakes.',
+			'category' => 'Car Torque',
+			'content'  => str_repeat( 'word ', 410 ),
+		),
+	);
+}
+digicars_preview_seed_posts();
+
+if ( ! class_exists( 'WP_Query' ) ) {
+	/**
+	 * Tiny WP_Query stand-in: iterates the dummy Car Torque posts and sets the
+	 * loop globals consumed by the blog-loop tags below.
+	 */
+	class WP_Query {
+		public $posts;
+		public $post_count;
+		public $found_posts;
+		public $max_num_pages;
+		private $pos = 0;
+
+		public function __construct( $args = array() ) {
+			$store               = $GLOBALS['digicars_post_store'];
+			$per                 = isset( $args['posts_per_page'] ) ? (int) $args['posts_per_page'] : 3;
+			$this->posts         = $per > 0 ? array_slice( array_values( $store ), 0, $per ) : array_values( $store );
+			$this->post_count    = count( $this->posts );
+			$this->found_posts   = $this->post_count;
+			$this->max_num_pages = $this->post_count > 0 ? 1 : 0;
+		}
+
+		public function have_posts() { return $this->pos < $this->post_count; }
+		public function the_post() {
+			$GLOBALS['digicars_current_post'] = $this->posts[ $this->pos ];
+			$GLOBALS['digicars_current_id']   = $this->posts[ $this->pos ]['ID'];
+			$this->pos++;
+		}
+		public function rewind_posts() { $this->pos = 0; }
+	}
+}
+
+function the_post() {}
+function get_the_date( $format = '', $id = 0 ) {
+	$id = (int) $id;
+	if ( $id && isset( $GLOBALS['digicars_post_store'][ $id ] ) ) {
+		return $GLOBALS['digicars_post_store'][ $id ]['date'];
+	}
+	return $GLOBALS['digicars_current_post']['date'] ?? '';
+}
+function get_the_category( $id = 0 ) {
+	$id   = (int) $id;
+	$name = $GLOBALS['digicars_post_store'][ $id ]['category'] ?? ( $GLOBALS['digicars_current_post']['category'] ?? '' );
+	return $name ? array( (object) array( 'name' => $name, 'slug' => sanitize_title( $name ) ) ) : array();
+}
+function get_the_excerpt( $id = 0 ) {
+	$id = (int) $id;
+	return $GLOBALS['digicars_post_store'][ $id ]['excerpt'] ?? ( $GLOBALS['digicars_current_post']['excerpt'] ?? '' );
+}
+function get_post_field( $field, $id = 0 ) {
+	$id = (int) $id;
+	return $GLOBALS['digicars_post_store'][ $id ][ $field ] ?? '';
+}
+function has_post_thumbnail( $id = 0 ) { return false; }
+function get_the_post_thumbnail( $id = 0, $size = '' ) { return ''; }
+function the_post_thumbnail( $size = '' ) {}
+function wp_strip_all_tags( $s ) { return trim( strip_tags( (string) $s ) ); }
+if ( ! function_exists( 'wp_trim_words' ) ) {
+	function wp_trim_words( $text, $num = 55, $more = '…' ) {
+		$words = preg_split( '/\s+/', trim( wp_strip_all_tags( (string) $text ) ), -1, PREG_SPLIT_NO_EMPTY );
+		if ( count( $words ) <= $num ) {
+			return implode( ' ', $words );
+		}
+		return implode( ' ', array_slice( $words, 0, $num ) ) . $more;
+	}
+}
 
 /*
  * get_header()/get_footer() are no-ops here: the harness already wraps the
