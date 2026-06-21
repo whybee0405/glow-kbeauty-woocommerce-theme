@@ -4,6 +4,8 @@
 *.png
 preview.html
 preview.php
+preview-digicars.html
+*-output.png
 docs/
 .playwright-mcp/
 MASTER_PROMPT_*.md
