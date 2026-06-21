@@ -27,8 +27,9 @@ $digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 	<?php /* Full-viewport centered design — the Concierge IS the hero. */ ?>
 	<section class="home-hero surface-carbon">
 
-		<?php /* Animated background: dot grid + dual glow */ ?>
+		<?php /* Animated background: neural canvas (base) + dot grid + dual glow */ ?>
 		<div class="home-hero__bg" aria-hidden="true">
+			<canvas class="home-hero__canvas" id="hero-neural"></canvas>
 			<div class="home-hero__dots"></div>
 			<div class="home-hero__glow"></div>
 		</div>
@@ -46,53 +47,7 @@ $digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 				<p class="t-lead home-hero__lead"><?php esc_html_e( 'Browse verified vehicles from South Africa\'s best dealers, get a real monthly figure, and let the Concierge shortlist cars that actually match how you drive.', 'digicars' ); ?></p>
 			</div>
 
-			<?php /* Concierge — input stays inside .concierge so concierge.js finds it */ ?>
-			<div class="home-hero__search-wrap">
-				<div class="concierge" data-concierge-home>
-					<label class="sr-only" for="home-concierge-input"><?php esc_html_e( 'Describe what you\'re looking for', 'digicars' ); ?></label>
-					<input
-						id="home-concierge-input"
-						type="text"
-						class="concierge__input"
-						autocomplete="off"
-						placeholder="<?php esc_attr_e( 'Family SUV under R6k pm, first car, bakkie for work…', 'digicars' ); ?>"
-					>
-
-					<div class="concierge__chips home-hero__chips cluster">
-						<?php
-						if ( function_exists( 'digicars_concierge_chips' ) ) :
-							foreach ( digicars_concierge_chips() as $digicars_chip_slug => $digicars_chip ) :
-								?>
-								<button
-									type="button"
-									class="chip"
-									data-concierge-chip="<?php echo esc_attr( $digicars_chip_slug ); ?>"
-									aria-pressed="false"
-								><?php echo esc_html( $digicars_chip['label'] ); ?></button>
-								<?php
-							endforeach;
-						endif;
-						?>
-					</div>
-
-					<div class="home-hero__results">
-						<p class="concierge__count t-mono"><?php esc_html_e( 'Select a chip or type to see matches', 'digicars' ); ?></p>
-						<div class="concierge__stage" aria-live="polite"></div>
-					</div>
-
-					<noscript>
-						<a class="btn btn--signal btn--block" href="<?php echo esc_url( $digicars_shop ); ?>"><?php esc_html_e( 'Browse all stock', 'digicars' ); ?></a>
-					</noscript>
-				</div>
-
-				<?php /* Submit button — outside .concierge so it is NOT cloned into the launcher modal */ ?>
-				<button type="button" class="home-hero__search-submit" aria-label="<?php esc_attr_e( 'Search', 'digicars' ); ?>">
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-						<line x1="5" y1="12" x2="19" y2="12"/>
-						<polyline points="12 5 19 12 12 19"/>
-					</svg>
-				</button>
-			</div>
+			<?php echo do_shortcode( '[helix_search]' ); ?>
 
 			<?php /* Secondary CTAs */ ?>
 			<div class="cluster home-hero__cta">
@@ -111,6 +66,99 @@ $digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 			</svg>
 		</div>
 
+	</section>
+
+	<?php /* 1b --------------------------------------- Traditional search filter */ ?>
+	<section class="section home-search surface-soft" data-reveal>
+		<div class="container">
+			<div class="home-search__inner">
+				<div class="home-search__head">
+					<div class="stack-sm">
+						<p class="eyebrow"><?php esc_html_e( 'Find your car', 'digicars' ); ?></p>
+						<h2 class="t-3" style="margin:0;"><?php esc_html_e( 'Search our stock', 'digicars' ); ?></h2>
+					</div>
+					<div class="home-search__conditions">
+						<?php
+						$digicars_conditions = array(
+							''     => __( 'All', 'digicars' ),
+							'new'  => __( 'New', 'digicars' ),
+							'used' => __( 'Used', 'digicars' ),
+							'demo' => __( 'Demo', 'digicars' ),
+						);
+						foreach ( $digicars_conditions as $digicars_cond_val => $digicars_cond_label ) :
+							$digicars_cond_href = '' !== $digicars_cond_val
+								? add_query_arg( 'condition', $digicars_cond_val, $digicars_shop )
+								: $digicars_shop;
+							?>
+							<a class="home-search__condition-btn" href="<?php echo esc_url( $digicars_cond_href ); ?>"><?php echo esc_html( $digicars_cond_label ); ?></a>
+						<?php endforeach; ?>
+					</div>
+				</div>
+
+				<form class="home-search__form" method="get" action="<?php echo esc_url( $digicars_shop ); ?>">
+					<div class="home-search__fields">
+						<div class="field">
+							<label class="label" for="hs-make"><?php esc_html_e( 'Make', 'digicars' ); ?></label>
+							<select class="select" id="hs-make" name="make">
+								<option value=""><?php esc_html_e( 'Any make', 'digicars' ); ?></option>
+								<?php
+								if ( function_exists( 'digicars_makes' ) ) :
+									foreach ( digicars_makes() as $digicars_make_slug => $digicars_make_label ) :
+										?>
+										<option value="<?php echo esc_attr( $digicars_make_slug ); ?>"><?php echo esc_html( $digicars_make_label ); ?></option>
+										<?php
+									endforeach;
+								endif;
+								?>
+							</select>
+						</div>
+
+						<div class="field">
+							<label class="label" for="hs-body"><?php esc_html_e( 'Body type', 'digicars' ); ?></label>
+							<select class="select" id="hs-body" name="body">
+								<option value=""><?php esc_html_e( 'Any body', 'digicars' ); ?></option>
+								<?php
+								if ( function_exists( 'digicars_body_types' ) ) :
+									foreach ( digicars_body_types() as $digicars_bt_slug => $digicars_bt_info ) :
+										?>
+										<option value="<?php echo esc_attr( $digicars_bt_slug ); ?>"><?php echo esc_html( $digicars_bt_info['label'] ); ?></option>
+										<?php
+									endforeach;
+								endif;
+								?>
+							</select>
+						</div>
+
+						<div class="field">
+							<label class="label" for="hs-price"><?php esc_html_e( 'Max price', 'digicars' ); ?></label>
+							<select class="select" id="hs-price" name="price_max">
+								<option value=""><?php esc_html_e( 'Any price', 'digicars' ); ?></option>
+								<option value="150000"><?php esc_html_e( 'Under R 150 000', 'digicars' ); ?></option>
+								<option value="200000"><?php esc_html_e( 'Under R 200 000', 'digicars' ); ?></option>
+								<option value="300000"><?php esc_html_e( 'Under R 300 000', 'digicars' ); ?></option>
+								<option value="500000"><?php esc_html_e( 'Under R 500 000', 'digicars' ); ?></option>
+								<option value="800000"><?php esc_html_e( 'Under R 800 000', 'digicars' ); ?></option>
+								<option value="1200000"><?php esc_html_e( 'Under R 1.2M', 'digicars' ); ?></option>
+							</select>
+						</div>
+
+						<div class="field">
+							<label class="label" for="hs-pm"><?php esc_html_e( 'Monthly budget', 'digicars' ); ?></label>
+							<select class="select" id="hs-pm" name="pm_max">
+								<option value=""><?php esc_html_e( 'Any monthly', 'digicars' ); ?></option>
+								<option value="3000"><?php esc_html_e( 'Under R 3 000 pm', 'digicars' ); ?></option>
+								<option value="4000"><?php esc_html_e( 'Under R 4 000 pm', 'digicars' ); ?></option>
+								<option value="6000"><?php esc_html_e( 'Under R 6 000 pm', 'digicars' ); ?></option>
+								<option value="8000"><?php esc_html_e( 'Under R 8 000 pm', 'digicars' ); ?></option>
+								<option value="12000"><?php esc_html_e( 'Under R 12 000 pm', 'digicars' ); ?></option>
+							</select>
+						</div>
+
+						<button type="submit" class="btn btn--signal home-search__submit"><?php esc_html_e( 'Search', 'digicars' ); ?></button>
+					</div>
+				</form>
+			</div>
+		</div>
 	</section>
 
 	<?php /* 2 -------------------------------------------------- Browse by body type */ ?>
@@ -463,7 +511,7 @@ $digicars_hero = get_theme_file_uri( 'images/hero/hero-showroom.svg' );
 			<h2 class="t-hero"><?php esc_html_e( 'Let\'s find the one.', 'digicars' ); ?></h2>
 			<p class="t-lead"><?php esc_html_e( 'Tell the Concierge how you drive, or dive straight into the stock. Either way, you\'re minutes from your next car.', 'digicars' ); ?></p>
 			<div class="cluster">
-				<button type="button" class="btn btn--signal btn--lg" data-concierge-open><?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?></button>
+				<a class="btn btn--signal btn--lg" href="<?php echo esc_url( home_url( '/concierge' ) ); ?>"><?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?></a>
 				<a class="btn btn--outline btn--lg" href="<?php echo esc_url( $digicars_shop ); ?>"><?php esc_html_e( 'Browse all stock', 'digicars' ); ?></a>
 			</div>
 		</div>

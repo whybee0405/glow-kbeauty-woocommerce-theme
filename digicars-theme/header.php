@@ -29,6 +29,7 @@ if ( ! function_exists( 'digicars_default_nav' ) ) {
 			array( 'url' => home_url( '/finance' ),       'label' => __( 'Finance', 'digicars' ) ),
 			array( 'url' => home_url( '/sell' ),          'label' => __( 'Trade-in', 'digicars' ) ),
 			array( 'url' => home_url( '/book-a-service' ),'label' => __( 'Book a service', 'digicars' ) ),
+			array( 'url' => home_url( '/car-torque' ),    'label' => __( 'Blog', 'digicars' ) ),
 			array( 'url' => home_url( '/about' ),         'label' => __( 'About', 'digicars' ) ),
 		);
 
@@ -119,9 +120,9 @@ if ( ! function_exists( 'digicars_default_nav' ) ) {
 				<span class="compare-count" data-compare-count>0</span>
 			</a>
 
-			<button type="button" class="btn btn--signal btn--sm btn--desktop" data-concierge-open>
+			<a class="btn btn--signal btn--sm btn--desktop" href="<?php echo esc_url( home_url( '/concierge' ) ); ?>">
 				<?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?>
-			</button>
+			</a>
 
 			<button type="button" class="icon-btn nav-toggle" aria-label="<?php esc_attr_e( 'Menu', 'digicars' ); ?>" aria-controls="mobile-menu" aria-expanded="false" data-nav-toggle>
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -162,6 +163,7 @@ if ( ! function_exists( 'digicars_default_nav' ) ) {
 			array( 'url' => home_url( '/finance' ), 'label' => __( 'Finance', 'digicars' ) ),
 			array( 'url' => home_url( '/sell' ), 'label' => __( 'Trade-in', 'digicars' ) ),
 			array( 'url' => home_url( '/book-a-service' ), 'label' => __( 'Book a service', 'digicars' ) ),
+			array( 'url' => home_url( '/car-torque' ), 'label' => __( 'Blog', 'digicars' ) ),
 			array( 'url' => home_url( '/about' ), 'label' => __( 'About', 'digicars' ) ),
 		);
 		foreach ( $digicars_mobile_links as $digicars_link ) {
@@ -175,9 +177,9 @@ if ( ! function_exists( 'digicars_default_nav' ) ) {
 	</nav>
 
 	<div class="mobile-menu__footer">
-		<button type="button" class="btn btn--signal btn--block" data-concierge-open>
+		<a class="btn btn--signal btn--block" href="<?php echo esc_url( home_url( '/concierge' ) ); ?>">
 			<?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?>
-		</button>
+		</a>
 		<p class="muted" style="margin-top:var(--s-4);">
 			<a href="tel:0105951180">010 595 1180</a><br>
 			<a href="mailto:info@digicars.co.za">info@digicars.co.za</a>

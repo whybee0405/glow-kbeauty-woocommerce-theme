@@ -502,6 +502,16 @@
    style.css primitives (.container, .section, .hero-split, .grid, .chip …).
    ========================================================================== */
 
+/* --- 0 · Neural-network canvas -------------------------------------------- */
+.home-hero__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* sits below dots + glow which follow in source order */
+}
+
 /* --- 1 · Concierge hero — full-viewport, centered -------------------------
    The Concierge IS the hero. No split layout, no sidebar panel. Dark carbon
    surface with an animated dot grid and dual radial glow (orange + volt).
@@ -876,10 +886,433 @@
 }
 @media (max-width: 760px) {
 	.home-trust__points { grid-template-columns: 1fr; }
+	/* Blog: 2-col on tablet */
+	.post-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 600px) {
-	.home-budgets { --cols: 2; }
+	/* Fix: override inline style="--cols:N" — set grid-template-columns directly */
+	.home-budgets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	/* Blog: stack on mobile */
+	.post-list { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 400px) {
+	.home-budgets { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
 	.home-budget:hover { transform: none; }
+}
+
+/* --- Body-type grid responsive (overrides inline style="--cols:5") --------- */
+@media (max-width: 900px) {
+	.bodytype-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+	.bodytype-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+	.bodytype-tile { padding: 16px 10px; }
+	.bodytype-tile__label { font-size: 0.78rem; }
+}
+@media (max-width: 380px) {
+	.bodytype-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+
+/* ==========================================================================
+   ABOUT PAGE — .digicars-steps / .digicars-principles / .digicars-branches
+   -------------------------------------------------------------------------- */
+/* Steps + principles: 2-col on tablet, stacked on mobile */
+@media (max-width: 768px) {
+	.digicars-steps,
+	.digicars-principles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+	.digicars-steps,
+	.digicars-principles { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Branch locations: 2-col on tablet, stacked on mobile */
+.digicars-branches { list-style: none; padding: 0; }
+.digicars-branch { padding-top: var(--s-4); border-top: 1px solid var(--line); }
+@media (max-width: 768px) {
+	.digicars-branches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+	.digicars-branches { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Dealer card grid: 2-col on tablet, 1-col on mobile */
+.dealer-card-grid { padding: 0; }
+@media (max-width: 768px) {
+	.dealer-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+	.dealer-card-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+
+/* ==========================================================================
+   ENQUIRY MODAL
+   -------------------------------------------------------------------------- */
+.enquiry-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 200;
+	background: rgba(20, 22, 26, 0.62);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--s-5);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+}
+.enquiry-modal[hidden] { display: none; }
+
+.enquiry-modal__dialog {
+	background: var(--paper);
+	border-radius: var(--r-3);
+	box-shadow: var(--shadow-3);
+	padding: clamp(var(--s-5), 4vw, var(--s-8));
+	width: 100%;
+	max-width: 500px;
+	max-height: 90vh;
+	overflow-y: auto;
+	position: relative;
+}
+
+.enquiry-modal__title {
+	font-family: var(--font-display);
+	font-weight: 800;
+	font-size: clamp(1.3rem, 3vw, 1.75rem);
+	letter-spacing: -0.02em;
+	margin: 0 0 var(--s-5);
+	padding-right: var(--s-8);
+}
+
+.enquiry-modal__close {
+	position: absolute;
+	top: var(--s-4);
+	right: var(--s-4);
+	width: 40px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--r-pill);
+	border: 1px solid var(--line);
+	font-size: 1.3rem;
+	color: var(--slate);
+	background: transparent;
+	cursor: pointer;
+	transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.enquiry-modal__close:hover { background: var(--paper-deep); color: var(--carbon); }
+
+.enquiry-modal__form { display: flex; flex-direction: column; gap: var(--s-4); }
+
+.enquiry-modal__field {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+}
+
+.enquiry-modal__label {
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--carbon);
+}
+
+.enquiry-modal__input {
+	width: 100%;
+	padding: 12px 14px;
+	font-family: var(--font-body);
+	font-size: 0.95rem;
+	color: var(--carbon);
+	background: var(--paper);
+	border: 1px solid var(--line);
+	border-radius: var(--r-2);
+	transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+	resize: vertical;
+}
+textarea.enquiry-modal__input { min-height: 96px; }
+.enquiry-modal__input:focus {
+	outline: none;
+	border-color: var(--carbon);
+	box-shadow: 0 0 0 3px rgba(20,22,26,0.08);
+}
+
+.enquiry-modal__error {
+	font-size: 0.875rem;
+	color: var(--signal-deep);
+	padding: var(--s-3) var(--s-4);
+	background: rgba(244,86,29,0.06);
+	border-radius: var(--r-2);
+	border: 1px solid rgba(244,86,29,0.2);
+}
+
+.enquiry-modal__submit {
+	width: 100%;
+	padding: 14px 22px;
+	font-family: var(--font-body);
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--paper);
+	background: linear-gradient(155deg, #f96b40 0%, #f4561d 48%, #c8400e 100%);
+	border: none;
+	border-radius: var(--r-2);
+	cursor: pointer;
+	transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+	box-shadow: 0 2px 8px rgba(244,86,29,0.4);
+}
+.enquiry-modal__submit:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(244,86,29,0.55); }
+.enquiry-modal__submit:active { transform: translateY(1px); }
+.enquiry-modal__submit:disabled { opacity: 0.6; pointer-events: none; }
+
+
+/* ==========================================================================
+   HOMEPAGE TRADITIONAL SEARCH FILTER
+   -------------------------------------------------------------------------- */
+.home-search { padding-block: clamp(var(--s-6), 4vw, var(--s-8)); }
+
+.home-search__inner {
+	background: var(--paper);
+	border: 1px solid var(--line);
+	border-radius: var(--r-3);
+	padding: clamp(var(--s-5), 3vw, var(--s-7));
+	box-shadow: var(--shadow-1);
+}
+
+.home-search__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: var(--s-3);
+	margin-bottom: var(--s-5);
+}
+
+.home-search__conditions {
+	display: flex;
+	gap: var(--s-2);
+	flex-wrap: wrap;
+}
+
+.home-search__condition-btn {
+	padding: 7px 16px;
+	font-family: var(--font-body);
+	font-size: 0.85rem;
+	font-weight: 600;
+	border-radius: var(--r-pill);
+	border: 1px solid var(--line);
+	background: transparent;
+	color: var(--slate);
+	cursor: pointer;
+	transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+}
+.home-search__condition-btn:hover,
+.home-search__condition-btn.is-active {
+	background: var(--carbon);
+	border-color: var(--carbon);
+	color: var(--paper);
+}
+
+.home-search__fields {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr) auto;
+	gap: var(--s-3);
+	align-items: end;
+}
+
+.home-search__fields .field { margin-top: 0 !important; }
+
+.home-search__submit {
+	padding: 12px 24px;
+	white-space: nowrap;
+	align-self: end;
+}
+
+@media (max-width: 900px) {
+	.home-search__fields { grid-template-columns: repeat(2, 1fr); }
+	.home-search__submit { grid-column: 1 / -1; width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+	.home-search__fields { grid-template-columns: 1fr; }
+}
+
+
+/* ==========================================================================
+   CONCIERGE PAGE
+   -------------------------------------------------------------------------- */
+.concierge-page {
+	min-height: 60vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.concierge-page__inner {
+	width: 100%;
+	max-width: 760px;
+	margin-inline: auto;
+}
+
+
+/* ==========================================================================
+   CONTACT PAGE
+   -------------------------------------------------------------------------- */
+.contact-layout {
+	display: grid;
+	grid-template-columns: 1fr 1.4fr;
+	gap: clamp(var(--s-7), 6vw, var(--s-10));
+	align-items: start;
+}
+
+.contact-details { display: flex; flex-direction: column; gap: var(--s-6); }
+
+.contact-detail-item { display: flex; flex-direction: column; gap: var(--s-2); }
+
+.contact-detail-item__label {
+	font-family: var(--font-mono);
+	font-size: 0.72rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--slate);
+}
+
+.contact-map {
+	border-radius: var(--r-3);
+	overflow: hidden;
+	border: 1px solid var(--line);
+	background: var(--paper-deep);
+	aspect-ratio: 4/3;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.contact-form-wrap {
+	background: var(--paper);
+	border: 1px solid var(--line);
+	border-radius: var(--r-3);
+	padding: clamp(var(--s-5), 4vw, var(--s-8));
+}
+
+@media (max-width: 860px) {
+	.contact-layout { grid-template-columns: 1fr; }
+}
+
+
+/* ==========================================================================
+   FAQ PAGE
+   -------------------------------------------------------------------------- */
+.faq-grid {
+	display: grid;
+	grid-template-columns: 240px 1fr;
+	gap: clamp(var(--s-7), 6vw, var(--s-9));
+	align-items: start;
+}
+
+.faq-nav {
+	position: sticky;
+	top: calc(68px + var(--s-5));
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+}
+
+.faq-nav__link {
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: var(--slate);
+	padding: var(--s-2) var(--s-3);
+	border-radius: var(--r-2);
+	transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+	text-decoration: none;
+}
+.faq-nav__link:hover,
+.faq-nav__link.is-active { color: var(--carbon); background: var(--paper-deep); }
+
+.faq-section { margin-bottom: var(--s-8); }
+.faq-section:last-child { margin-bottom: 0; }
+
+.faq-section__title {
+	font-family: var(--font-display);
+	font-weight: 800;
+	font-size: clamp(1.1rem, 2vw, 1.4rem);
+	margin-bottom: var(--s-5);
+	padding-bottom: var(--s-3);
+	border-bottom: 2px solid var(--carbon);
+}
+
+@media (max-width: 768px) {
+	.faq-grid { grid-template-columns: 1fr; }
+	.faq-nav { display: none; }
+}
+
+/* FAQ accordion items */
+.faq-item {
+	border-bottom: 1px solid var(--border);
+}
+.faq-item:first-of-type { border-top: 1px solid var(--border); }
+
+.faq-item__question {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: var(--s-4);
+	padding: var(--s-4) 0;
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--carbon);
+	cursor: pointer;
+	list-style: none;
+	user-select: none;
+	transition: color var(--dur) var(--ease);
+}
+.faq-item__question::-webkit-details-marker { display: none; }
+.faq-item__question:hover { color: var(--signal); }
+
+.faq-item__icon {
+	flex-shrink: 0;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 2px solid currentColor;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+	position: relative;
+}
+.faq-item__icon::before,
+.faq-item__icon::after {
+	content: '';
+	position: absolute;
+	background: currentColor;
+	border-radius: 2px;
+}
+.faq-item__icon::before { width: 10px; height: 2px; }
+.faq-item__icon::after  { width: 2px; height: 10px; transition: transform var(--dur) var(--ease); }
+
+.faq-item[open] .faq-item__icon { background: var(--signal); border-color: var(--signal); color: var(--paper); }
+.faq-item[open] .faq-item__icon::after { transform: rotate(90deg); }
+
+.faq-item__answer {
+	padding-bottom: var(--s-5);
+	color: var(--slate);
+	line-height: 1.7;
+	max-width: 72ch;
+}
+
+/* Contact form two-col grid */
+.contact-layout .digicars-form__grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--s-4);
+}
+@media (max-width: 600px) {
+	.contact-layout .digicars-form__grid { grid-template-columns: 1fr; }
 }

@@ -380,19 +380,17 @@ global $wp_query;
 $digicars_found = ( isset( $wp_query ) && isset( $wp_query->found_posts ) ) ? (int) $wp_query->found_posts : 0;
 $digicars_base  = digicars_shop_base_url();
 
-// Hero title: queried term name on a taxonomy, else the WC page title.
-if ( function_exists( 'woocommerce_page_title' ) ) {
-	$digicars_title = woocommerce_page_title( false );
+// Hero title: taxonomy term name, else always "Cars in stock" (ignores WP shop page slug).
+$digicars_term = function_exists( 'get_queried_object' ) ? get_queried_object() : null;
+if ( $digicars_term instanceof WP_Term && ! empty( $digicars_term->name ) ) {
+	$digicars_title = $digicars_term->name;
 } else {
 	$digicars_title = __( 'Cars in stock', 'digicars' );
 }
-$digicars_term = function_exists( 'get_queried_object' ) ? get_queried_object() : null;
-if ( $digicars_term && isset( $digicars_term->name ) && ! empty( $digicars_term->name ) ) {
-	$digicars_title = $digicars_term->name;
-}
 ?>
 
-<div class="catalogue section section--tight">
+<div class="catalogue">
+<div class="catalogue__intro">
 	<div class="container">
 
 		<?php if ( function_exists( 'woocommerce_breadcrumb' ) ) : ?>
@@ -407,20 +405,13 @@ if ( $digicars_term && isset( $digicars_term->name ) && ! empty( $digicars_term-
 			</p>
 		</header>
 
-		<?php // Concierge mount — hydrated by JS; static fallback links home. ?>
-		<section class="concierge-mount surface-carbon" data-concierge-inline>
-			<div class="concierge-mount__copy">
-				<p class="eyebrow"><?php esc_html_e( 'Guided search', 'digicars' ); ?></p>
-				<h2 class="t-2"><?php esc_html_e( 'Not sure where to start? Ask the Concierge.', 'digicars' ); ?></h2>
-				<p class="muted"><?php esc_html_e( 'Describe your budget and how you drive — we will shortlist vehicles that fit.', 'digicars' ); ?></p>
-			</div>
-			<div class="concierge-mount__action">
-				<button type="button" class="btn btn--signal" data-concierge-open><?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?></button>
-				<noscript>
-					<a class="btn btn--outline" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Explore the homepage', 'digicars' ); ?></a>
-				</noscript>
-			</div>
-		</section>
+		<?php echo do_shortcode( '[helix_search]' ); ?>
+
+	</div><!-- /.container -->
+</div><!-- /.catalogue__intro -->
+
+<div class="catalogue__body">
+	<div class="container">
 
 		<div class="catalogue__layout">
 
@@ -522,6 +513,7 @@ if ( $digicars_term && isset( $digicars_term->name ) && ! empty( $digicars_term-
 			</div><!-- /.catalogue__results -->
 		</div><!-- /.catalogue__layout -->
 	</div><!-- /.container -->
+</div><!-- /.catalogue__body -->
 </div><!-- /.catalogue -->
 
 <?php // Mobile filter drawer — mirrors the sidebar form. ?>

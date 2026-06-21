@@ -119,6 +119,18 @@ function digicars_enqueue_assets() {
 		true
 	);
 
+	// Hero neural-canvas — front page only, no dependencies.
+	if ( is_front_page() ) {
+		$hero_canvas_path = get_theme_file_path( 'js/hero-canvas.js' );
+		wp_enqueue_script(
+			'digicars-hero-canvas',
+			get_theme_file_uri( 'js/hero-canvas.js' ),
+			array(),
+			file_exists( $hero_canvas_path ) ? filemtime( $hero_canvas_path ) : null,
+			true
+		);
+	}
+
 	wp_localize_script(
 		'digicars-main',
 		'digicarsData',
@@ -897,6 +909,11 @@ function digicars_strip_default_loop_chrome() {
 	remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
 }
 add_action( 'init', 'digicars_strip_default_loop_chrome' );
+
+// Tell WooCommerce to render 1 column so it adds `columns-1` to ul.products,
+// which makes WC's own CSS write width:100% on each li.product.
+// Our CSS grid in style.css then controls the actual column count visually.
+add_filter( 'loop_shop_columns', function() { return 1; } );
 
 /* -------------------------------------------------------------------------
  * 7b. Faceted catalogue — server-side filter handling.

@@ -75,13 +75,29 @@ $mileage      = (int) digicars_meta( $vehicle_id, '_vehicle_mileage' );
 $transmission = trim( (string) digicars_meta( $vehicle_id, '_vehicle_transmission' ) );
 $fuel         = trim( (string) digicars_meta( $vehicle_id, '_vehicle_fuel' ) );
 
-// Image with a defensive theme fallback.
+// Image: WC thumbnail → body-type render → generic render → SVG placeholder.
 if ( $product->get_image_id() ) {
 	$image = $product->get_image( 'digicars-card' );
 } else {
+	$body_type  = preg_replace( '/[^a-z0-9_-]/', '', strtolower( trim( (string) digicars_meta( $vehicle_id, '_vehicle_body_type' ) ) ) );
+	$theme_dir  = get_template_directory();
+	$theme_uri  = get_template_directory_uri();
+	$candidates = array();
+	if ( '' !== $body_type ) {
+		$candidates[] = 'images/vehicles/' . $body_type . '-render.jpg';
+	}
+	$candidates[] = 'images/vehicles/_default.jpg';
+	$candidates[] = 'images/vehicles/_default.svg';
+	$img_src      = $theme_uri . '/img/placeholder-car.svg'; // absolute last resort
+	foreach ( $candidates as $rel ) {
+		if ( file_exists( $theme_dir . '/' . $rel ) ) {
+			$img_src = $theme_uri . '/' . $rel;
+			break;
+		}
+	}
 	$image = sprintf(
-		'<img src="%1$s" alt="%2$s" width="640" height="420" loading="lazy" decoding="async" />',
-		esc_url( get_theme_file_uri( 'images/vehicles/_default.svg' ) ),
+		'<img src="%1$s" alt="%2$s" width="800" height="533" loading="lazy" decoding="async" />',
+		esc_url( $img_src ),
 		esc_attr( $title )
 	);
 }
@@ -106,11 +122,20 @@ if ( $product->get_image_id() ) {
 			data-vehicle-id="<?php echo esc_attr( $vehicle_id ); ?>"
 			aria-pressed="false"
 			aria-label="<?php esc_attr_e( 'Add to compare', 'digicars' ); ?>"
-		><?php esc_html_e( 'Compare', 'digicars' ); ?></button>
+		>
+			<svg viewBox="0 0 18 18" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<rect x="1.5" y="3" width="6" height="12" rx="1.5"/>
+				<rect x="10.5" y="3" width="6" height="12" rx="1.5"/>
+			</svg>
+		</button>
 	</div>
 
 	<div class="vehicle-card__body">
 		<p class="vehicle-card__make eyebrow"><?php echo esc_html( strtoupper( $eyebrow ) ); ?></p>
+
+		<h3 class="vehicle-card__title t-3">
+			<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
+		</h3>
 
 		<div class="vehicle-card__price">
 			<span class="vehicle-card__price-main">R <?php echo esc_html( number_format( $price, 0, '.', ' ' ) ); ?></span>
@@ -121,10 +146,6 @@ if ( $product->get_image_id() ) {
 				?>
 			</span>
 		</div>
-
-		<h3 class="vehicle-card__title t-3">
-			<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
-		</h3>
 
 		<?php if ( $mileage > 0 || '' !== $transmission || '' !== $fuel ) : ?>
 			<ul class="vehicle-card__specs">

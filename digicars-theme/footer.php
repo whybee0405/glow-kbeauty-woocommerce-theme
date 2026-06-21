@@ -27,9 +27,9 @@ if ( ! $digicars_shop_url ) {
 			<p class="footer-lead">
 				<?php esc_html_e( 'The showroom that thinks. Tell us what you need and the Concierge finds your next car.', 'digicars' ); ?>
 			</p>
-			<button type="button" class="btn btn--signal" data-concierge-open>
+			<a class="btn btn--signal" href="<?php echo esc_url( home_url( '/concierge' ) ); ?>">
 				<?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?>
-			</button>
+			</a>
 		</div>
 
 		<div class="footer-grid">
@@ -66,8 +66,10 @@ if ( ! $digicars_shop_url ) {
 				<div class="footer-col__title"><?php esc_html_e( 'Company', 'digicars' ); ?></div>
 				<nav class="footer-col__list" aria-label="<?php esc_attr_e( 'Company', 'digicars' ); ?>">
 					<a href="<?php echo esc_url( home_url( '/about' ) ); ?>"><?php esc_html_e( 'About', 'digicars' ); ?></a>
-					<a href="<?php echo esc_url( home_url( '/blog' ) ); ?>"><?php esc_html_e( 'Car Torque (blog)', 'digicars' ); ?></a>
+					<a href="<?php echo esc_url( home_url( '/car-torque' ) ); ?>"><?php esc_html_e( 'Car Torque (blog)', 'digicars' ); ?></a>
 					<a href="<?php echo esc_url( home_url( '/contact' ) ); ?>"><?php esc_html_e( 'Contact', 'digicars' ); ?></a>
+					<a href="<?php echo esc_url( home_url( '/faq' ) ); ?>"><?php esc_html_e( 'FAQ', 'digicars' ); ?></a>
+					<a href="<?php echo esc_url( home_url( '/concierge' ) ); ?>"><?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?></a>
 				</nav>
 			</div>
 

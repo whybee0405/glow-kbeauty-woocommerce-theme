@@ -17,6 +17,55 @@ add_action( 'admin_menu', function () {
 	);
 } );
 
+/**
+ * Create the required site pages if they don't already exist.
+ * Idempotent: skips any page whose slug already resolves.
+ */
+function digicars_create_demo_pages(): void {
+	$pages = array(
+		array(
+			'slug'    => 'finance',
+			'title'   => 'Vehicle Finance',
+			'excerpt' => 'Get pre-approved finance from major South African banks online.',
+		),
+		array(
+			'slug'    => 'sell',
+			'title'   => 'Trade-in or Sell Your Car',
+			'excerpt' => 'Get an instant online valuation and sell your car to Digicars.',
+		),
+		array(
+			'slug'    => 'book-a-service',
+			'title'   => 'Book a Service',
+			'excerpt' => 'Book your next service at a Digicars partner workshop online.',
+		),
+		array(
+			'slug'    => 'about',
+			'title'   => 'About Digicars',
+			'excerpt' => 'Digital-first automotive marketplace built for South Africa.',
+		),
+		array(
+			'slug'    => 'compare',
+			'title'   => 'Compare Vehicles',
+			'excerpt' => 'Side-by-side comparison of vehicles in your Digicars shortlist.',
+		),
+	);
+
+	foreach ( $pages as $page ) {
+		$existing = get_page_by_path( $page['slug'], OBJECT, 'page' );
+		if ( $existing instanceof WP_Post ) {
+			continue;
+		}
+		wp_insert_post( array(
+			'post_type'    => 'page',
+			'post_status'  => 'publish',
+			'post_title'   => $page['title'],
+			'post_name'    => $page['slug'],
+			'post_excerpt' => $page['excerpt'],
+			'post_content' => '',
+		) );
+	}
+}
+
 function digicars_render_import_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
@@ -37,6 +86,8 @@ function digicars_render_import_page() {
 			@ini_set( 'memory_limit', '512M' );
 			ignore_user_abort( true );
 
+			digicars_create_demo_pages();
+
 			ob_start();
 			require get_template_directory() . '/dummy-products.php';
 			require get_template_directory() . '/dummy-posts.php';
@@ -53,10 +104,11 @@ function digicars_render_import_page() {
 
 		<?php if ( $did_import ) : ?>
 		<div class="notice notice-success is-dismissible">
-			<p><strong>Import complete — <?php echo esc_html( $vehicle_count ); ?> vehicles and <?php echo esc_html( $post_count ); ?> blog posts now in your site.</strong></p>
+			<p><strong>Import complete — <?php echo esc_html( $vehicle_count ); ?> vehicles, <?php echo esc_html( $post_count ); ?> blog posts, and all nav pages created.</strong></p>
 			<p>
 				<a class="button" href="<?php echo esc_url( admin_url( 'edit.php?post_type=product' ) ); ?>">View vehicles</a>&nbsp;
 				<a class="button" href="<?php echo esc_url( admin_url( 'edit.php' ) ); ?>">View posts</a>&nbsp;
+				<a class="button" href="<?php echo esc_url( admin_url( 'edit.php?post_type=page' ) ); ?>">View pages</a>&nbsp;
 				<a class="button" href="<?php echo esc_url( home_url( '/' ) ); ?>" target="_blank">View site</a>
 			</p>
 		</div>
@@ -68,7 +120,7 @@ function digicars_render_import_page() {
 
 		<div class="card" style="max-width:640px;padding:24px 24px 16px;margin-top:16px;">
 			<h2 style="margin-top:0;">Digicars demo content</h2>
-			<p>One click creates a fully populated catalogue and blog so you can see the theme working immediately.</p>
+			<p>One click creates a fully populated catalogue and blog, and creates all the site pages linked in the navigation.</p>
 
 			<h3 style="margin-bottom:6px;">Vehicles (23)</h3>
 			<ul style="margin-left:1.25em;list-style:disc;margin-top:0;">

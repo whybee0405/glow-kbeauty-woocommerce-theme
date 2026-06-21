@@ -33,7 +33,7 @@ if ( ! $digicars_shop_url ) {
 			</p>
 			<div class="cluster">
 				<a class="btn btn--signal" href="<?php echo esc_url( $digicars_shop_url ); ?>"><?php esc_html_e( 'Browse cars in stock', 'digicars' ); ?></a>
-				<button type="button" class="btn btn--outline" data-concierge-open><?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?></button>
+				<a class="btn btn--outline" href="<?php echo esc_url( home_url( '/concierge' ) ); ?>"><?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?></a>
 			</div>
 		</div>
 	</div>
@@ -86,7 +86,7 @@ if ( ! $digicars_shop_url ) {
 					<?php esc_html_e( 'Passion is the people — consultants who actually know these cars and want you in the right one. Technology is what lets them do it at scale: a bespoke CRM that keeps your deal moving, AI-assisted discovery through the Concierge that reads our live catalogue, and verified stock so what you see online is what you collect.', 'digicars' ); ?>
 				</p>
 				<div class="cluster" style="margin-top:var(--s-3);">
-					<button type="button" class="btn btn--signal" data-concierge-open><?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?></button>
+					<a class="btn btn--signal" href="<?php echo esc_url( home_url( '/concierge' ) ); ?>"><?php esc_html_e( 'Ask the Concierge', 'digicars' ); ?></a>
 					<a class="btn btn--outline" href="<?php echo esc_url( $digicars_shop_url ); ?>"><?php esc_html_e( 'See the stock', 'digicars' ); ?></a>
 				</div>
 			</div>
@@ -140,7 +140,7 @@ if ( ! $digicars_shop_url ) {
 			</div>
 		</div>
 
-		<div class="grid" style="--cols:4;">
+		<div class="grid digicars-branches" style="--cols:4;">
 			<div class="digicars-branch stack-sm">
 				<h3 class="t-3"><?php esc_html_e( 'Sandton', 'digicars' ); ?></h3>
 				<p class="muted"><?php esc_html_e( 'Chery and Omoda & Jaecoo showrooms off Rivonia Road.', 'digicars' ); ?></p>
@@ -160,7 +160,7 @@ if ( ! $digicars_shop_url ) {
 		</div>
 
 		<div class="cluster" style="margin-top:var(--s-7);">
-			<a class="btn btn--solid" href="<?php echo esc_url( home_url( '/find-a-dealer' ) ); ?>"><?php esc_html_e( 'Find a dealer', 'digicars' ); ?></a>
+			<a class="btn btn--signal" href="<?php echo esc_url( home_url( '/find-a-dealer' ) ); ?>"><?php esc_html_e( 'Find a dealer', 'digicars' ); ?></a>
 			<span class="muted" style="font-size:0.9rem;">
 				<a href="mailto:info@digicars.co.za">info@digicars.co.za</a> · <a href="tel:0105951180">010 595 1180</a>
 			</span>

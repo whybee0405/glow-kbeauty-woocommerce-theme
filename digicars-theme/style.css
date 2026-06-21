@@ -330,13 +330,41 @@ hr { border: 0; border-top: 1px solid var(--line); margin: var(--s-6) 0; }
 }
 .btn--solid:hover { --btn-bg:var(--carbon-soft); --btn-border:var(--carbon-soft); }
 
-/* Signal — primary CTA */
+/* Signal — primary CTA, liquid morphism.
+   Gradient runs warm-light → signal-orange → deep-ember for a wet, backlit feel.
+   Glow blooms on hover; inset darkens on press. No ledge, no hard edges. */
 .btn--signal {
-  --btn-bg:var(--signal);
-  --btn-fg:var(--paper);
-  --btn-border:var(--signal);
+  --btn-fg: var(--paper);
+  --btn-border: transparent;
+  background: linear-gradient(155deg, #f96b40 0%, #f4561d 48%, #c8400e 100%);
+  border-color: transparent;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.14),
+    0 0 0 1px rgba(175, 52, 10, 0.55),
+    0 2px 8px  rgba(244, 86, 29, 0.48),
+    0 8px 28px rgba(244, 86, 29, 0.26);
 }
-.btn--signal:hover { --btn-bg:var(--signal-deep); --btn-border:var(--signal-deep); box-shadow: var(--shadow-2); }
+.btn--signal:hover {
+  background: linear-gradient(155deg, #fb7d55 0%, #f4561d 48%, #c8400e 100%);
+  border-color: transparent;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.14),
+    0 0 0 1px rgba(175, 52, 10, 0.45),
+    0 4px 14px rgba(244, 86, 29, 0.62),
+    0 14px 40px rgba(244, 86, 29, 0.32);
+  transform: translateY(-1px);
+}
+.btn--signal:active {
+  background: linear-gradient(155deg, #f4561d 0%, #d8410d 48%, #b03509 100%);
+  border-color: transparent;
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(175, 52, 10, 0.6),
+    0 1px 4px rgba(244, 86, 29, 0.28);
+  transform: translateY(1px);
+}
 
 /* Outline */
 .btn--outline {
@@ -386,7 +414,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: var(--s-6) 0; }
   letter-spacing: 0.06em;
   line-height: 1;
   padding: 5px 9px;
-  border-radius: var(--r-1);
+  border-radius: 6px;
   background: var(--carbon);
   color: var(--paper);
   white-space: nowrap;
@@ -475,6 +503,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: var(--s-6) 0; }
 .vehicle-card:hover {
   border-color: var(--carbon);
   box-shadow: var(--shadow-3);
+  transform: translateY(-2px);
 }
 
 .vehicle-card__media {
@@ -486,6 +515,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: var(--s-6) 0; }
 .vehicle-card__media img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   transition: transform 320ms var(--ease);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -527,7 +557,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: var(--s-6) 0; }
 .vehicle-card__body {
   display: flex;
   flex-direction: column;
-  gap: var(--s-2);
+  gap: var(--s-3);
   padding: var(--s-5);
 }
 
@@ -556,7 +586,6 @@ hr { border: 0; border-top: 1px solid var(--line); margin: var(--s-6) 0; }
 
 .vehicle-card__title {
   font-size: 1.15rem;
-  margin-top: var(--s-1);
 }
 
 .vehicle-card__specs {
@@ -577,7 +606,8 @@ hr { border: 0; border-top: 1px solid var(--line); margin: var(--s-6) 0; }
   color: var(--line);
 }
 
-.vehicle-card__action { margin-top: var(--s-4); }
+.vehicle-card__action { margin-top: auto; padding-top: var(--s-4); }
+.vehicle-card__action .btn { width: 100%; justify-content: center; }
 
 
 /* ==========================================================================
@@ -703,13 +733,21 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--carbon); width
   flex-direction: column;
   gap: var(--s-6);
 }
+.filters--sidebar {
+  position: sticky;
+  top: calc(64px + var(--s-4));
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
 .filter-group { border-bottom: 1px solid var(--line); padding-bottom: var(--s-5); }
 .filter-group:last-child { border-bottom: 0; }
 .filter-group__title {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--slate);
   margin-bottom: var(--s-3);
 }
@@ -776,6 +814,116 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--carbon); width
   border: 1px solid var(--line);
 }
 .filter-drawer__close:hover { background: var(--paper-deep); }
+
+
+/* ==========================================================================
+   08b CATALOGUE ARCHIVE — two-column layout + concierge-mount strip
+   --------------------------------------------------------------------------
+   archive-product.php: 272px sidebar + fluid results column. Sidebar
+   collapses to the slide-in drawer at ≤900px (matches the §15 breakpoint
+   that already hides .filters--sidebar).
+   ========================================================================== */
+
+/* Breadcrumb */
+.catalogue .woocommerce-breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: rgba(246,246,244,0.4);
+  padding-block: var(--s-3);
+}
+.catalogue .woocommerce-breadcrumb a { color: rgba(246,246,244,0.4); text-decoration: none; }
+.catalogue .woocommerce-breadcrumb a:hover { color: var(--signal); }
+.catalogue .woocommerce-breadcrumb .sep,
+.catalogue .woocommerce-breadcrumb .breadcrumb-sep { color: rgba(246,246,244,0.15); padding-inline: 4px; }
+
+/* Page hero heading */
+.catalogue__hero {
+  padding-block: clamp(var(--s-6), 5vw, var(--s-8)) var(--s-6);
+  max-width: 68ch;
+}
+.catalogue__hero .eyebrow { margin-bottom: var(--s-3); }
+.catalogue__hero .t-1 { margin-bottom: var(--s-3); color: var(--paper); }
+.catalogue__hero .lead { margin: 0; color: rgba(246,246,244,0.6); }
+
+/* Inline Concierge strip — sits between hero and the two-column grid */
+.concierge-mount {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: clamp(var(--s-4), 3vw, var(--s-6));
+  padding: clamp(var(--s-5), 3vw, var(--s-7));
+  border-radius: var(--r-3);
+  margin-bottom: var(--s-7);
+}
+.concierge-mount__copy > * + * { margin-top: var(--s-2); }
+.concierge-mount__copy .t-2 { margin: 0; font-size: clamp(1.1rem, 2vw, 1.45rem); }
+.concierge-mount__copy .muted { margin: 0; }
+.concierge-mount__action {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Two-column grid: 272px sidebar | fluid results */
+.catalogue__layout {
+  display: grid;
+  grid-template-columns: 272px 1fr;
+  gap: clamp(var(--s-6), 4vw, var(--s-8));
+  align-items: start;
+}
+
+/* Results column — min-width prevents overflow inside grid */
+.catalogue__results { min-width: 0; }
+
+/* Product grid inside results — auto-fill so cards stay readable */
+.catalogue__results .grid--products,
+.catalogue__results ul.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--s-5);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+/* Reset WooCommerce columns-X percentage widths so grid tracks control sizing. */
+.catalogue__results ul.products li.product,
+.catalogue__results .grid--products li {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  float: none;
+}
+
+/* Empty state */
+.catalogue__empty {
+  padding: clamp(var(--s-8), 10vw, var(--s-10)) var(--s-5);
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+  background: var(--paper-deep);
+}
+.catalogue__empty .eyebrow { margin-bottom: var(--s-3); }
+.catalogue__empty .t-2 { max-width: 40ch; margin: 0 auto var(--s-3); }
+.catalogue__empty .muted { max-width: 52ch; margin: 0 auto var(--s-5); }
+.catalogue__empty .cluster { justify-content: center; }
+
+/* Intro zone — carbon surface housing breadcrumb + hero + concierge */
+.catalogue__intro {
+  background: var(--carbon);
+  padding-block: clamp(var(--s-7), 6vw, var(--s-9)) 0;
+}
+.catalogue__intro .concierge-mount {
+  margin-bottom: 0;
+}
+
+/* Body zone — paper surface housing filters + results grid */
+.catalogue__body {
+  background: var(--paper);
+  padding-block: clamp(var(--s-7), 6vw, var(--s-9));
+}
 
 
 /* ==========================================================================
@@ -1231,14 +1379,26 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--carbon); width
   .filter-toggle { display: inline-flex; }
   .filters--sidebar { display: none; } /* lives in drawer on mobile */
 
+  /* Switch catalogue layout to block so the hidden sidebar leaves no empty track */
+  .catalogue__layout { display: block; }
+  .concierge-mount { grid-template-columns: 1fr; }
+
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .section-head { align-items: flex-start; }
 }
 
-/* <= 600px — single-column content, product grids stay 2-col */
+/* <= 768px — product grids soften to 2 columns on tablet */
+@media (max-width: 768px) {
+  .grid--products,
+  .catalogue__results ul.products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+}
+
+/* <= 600px — single-column content, product grids go 1-col on mobile */
 @media (max-width: 600px) {
   .grid { --cols: 1; }
-  .grid--products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
+  /* 1 car per row on mobile for better readability */
+  .grid--products,
+  .catalogue__results ul.products { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
   .footer-grid { grid-template-columns: 1fr; gap: var(--s-6); }
   .footer-bottom { flex-direction: column; align-items: flex-start; }
 
@@ -1253,5 +1413,5 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--carbon); width
 /* Guard: never overflow at 360px */
 @media (max-width: 380px) {
   :root { --gutter: 16px; }
-  .grid--products { gap: var(--s-2); }
+  .grid--products { gap: var(--s-3); }
 }

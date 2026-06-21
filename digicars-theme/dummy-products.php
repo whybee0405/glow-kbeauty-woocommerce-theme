@@ -1060,6 +1060,139 @@ $digicars_vehicles = array(
 );
 
 /* -------------------------------------------------------------------------
+ * Helix AI — WooCommerce pa_* attribute helpers.
+ *
+ * Helix reads the standard pa_* attribute taxonomy system. These helpers
+ * create global attributes on demand and assign terms to each product.
+ * They run AFTER the existing _vehicle_* meta + custom taxonomy block so
+ * both systems stay in sync and neither overwrites the other.
+ * ---------------------------------------------------------------------- */
+
+if ( ! function_exists( 'digicars_ensure_wc_attribute' ) ) {
+	/**
+	 * Ensure a WooCommerce global attribute taxonomy exists and is registered.
+	 *
+	 * @param string $slug Attribute slug WITHOUT the pa_ prefix, e.g. 'make'.
+	 * @return bool True if the taxonomy is ready for use.
+	 */
+	function digicars_ensure_wc_attribute( string $slug ): bool {
+		$taxonomy = 'pa_' . $slug;
+
+		if ( taxonomy_exists( $taxonomy ) ) {
+			return true;
+		}
+
+		// Flush WC cache so freshly-created attributes are visible.
+		wp_cache_delete( 'wc_attribute_taxonomies', 'woocommerce' );
+
+		// Check if the row already exists in the DB (created earlier this run).
+		if ( function_exists( 'wc_get_attribute_taxonomies' ) ) {
+			foreach ( (array) wc_get_attribute_taxonomies() as $attr ) {
+				if ( $attr->attribute_name === $slug ) {
+					if ( function_exists( 'wc_register_attribute_taxonomies' ) ) {
+						wc_register_attribute_taxonomies();
+					}
+					return taxonomy_exists( $taxonomy );
+				}
+			}
+		}
+
+		// Create the global attribute for the first time.
+		if ( ! function_exists( 'wc_create_attribute' ) ) {
+			return false;
+		}
+
+		$label  = ucwords( str_replace( '-', ' ', $slug ) );
+		$result = wc_create_attribute( array(
+			'name'         => $label,
+			'slug'         => $slug,
+			'type'         => 'select',
+			'order_by'     => 'menu_order',
+			'has_archives' => false,
+		) );
+
+		if ( is_wp_error( $result ) ) {
+			return false;
+		}
+
+		wp_cache_delete( 'wc_attribute_taxonomies', 'woocommerce' );
+
+		if ( function_exists( 'wc_register_attribute_taxonomies' ) ) {
+			wc_register_attribute_taxonomies();
+		}
+
+		return taxonomy_exists( $taxonomy );
+	}
+}
+
+if ( ! function_exists( 'digicars_set_product_pa_attributes' ) ) {
+	/**
+	 * Create attribute terms and wire them to a product, then update the
+	 * _product_attributes meta so the WC product page renders them.
+	 *
+	 * @param int   $product_id WP post ID of the product.
+	 * @param array $attrs      Map of attribute-slug (without pa_) => value string.
+	 */
+	function digicars_set_product_pa_attributes( int $product_id, array $attrs ): void {
+		$product_attributes = array();
+		$position           = 0;
+
+		foreach ( $attrs as $slug => $value ) {
+			$value = (string) $value;
+			if ( '' === $value ) {
+				continue;
+			}
+
+			if ( ! digicars_ensure_wc_attribute( $slug ) ) {
+				continue;
+			}
+
+			$taxonomy = 'pa_' . $slug;
+
+			// Resolve or create the term.
+			$term = get_term_by( 'name', $value, $taxonomy );
+			if ( ! $term instanceof WP_Term ) {
+				$inserted = wp_insert_term( $value, $taxonomy );
+				$term     = ! is_wp_error( $inserted )
+					? get_term( (int) $inserted['term_id'], $taxonomy )
+					: get_term_by( 'name', $value, $taxonomy );
+			}
+
+			if ( $term instanceof WP_Term ) {
+				wp_set_object_terms( $product_id, array( (int) $term->term_id ), $taxonomy, false );
+			}
+
+			$product_attributes[ $taxonomy ] = array(
+				'name'         => $taxonomy,
+				'value'        => '',
+				'position'     => $position++,
+				'is_visible'   => 1,
+				'is_variation' => 0,
+				'is_taxonomy'  => 1,
+			);
+		}
+
+		// Merge with existing (preserves any non-PA attributes already set).
+		$existing = get_post_meta( $product_id, '_product_attributes', true );
+		update_post_meta(
+			$product_id,
+			'_product_attributes',
+			array_merge( is_array( $existing ) ? $existing : array(), $product_attributes )
+		);
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * Vehicles certified as CPO (Certified Pre-Owned).
+ * Three used units with full service history and single-owner records.
+ * ---------------------------------------------------------------------- */
+$digicars_cpo_stocks = array(
+	'DC-2026-0016', // VW Golf 1.4 TSI — 1 owner, 68k km, full VW history
+	'DC-2026-0017', // Toyota Corolla — 1 owner, 52k km, full Toyota history
+	'DC-2026-0020', // Toyota Corolla Cross Hybrid — 1 owner, 31k km, full Toyota history
+);
+
+/* -------------------------------------------------------------------------
  * Import loop.
  * ---------------------------------------------------------------------- */
 
@@ -1264,6 +1397,7 @@ foreach ( $digicars_vehicles as $v ) {
 	update_post_meta( $product_id, '_stock_status', 'instock' );
 	update_post_meta( $product_id, '_virtual', 'no' );
 	update_post_meta( $product_id, '_manage_stock', 'no' );
+	update_post_meta( $product_id, '_sku', $stock_no );
 
 	/* ---- AI summary (built after meta is in place). ------------------- */
 	$summary = '';
@@ -1318,6 +1452,52 @@ foreach ( $digicars_vehicles as $v ) {
 			wp_set_object_terms( $product_id, array( $term_id ), $taxonomy, false );
 		}
 	}
+
+	/* ---- Helix AI: WooCommerce pa_* product attributes. --------------- *
+	 *
+	 * Helix reads from standard WooCommerce global attribute taxonomies
+	 * (pa_make, pa_model, ...) rather than _vehicle_* post meta. We set
+	 * both so the custom theme templates AND Helix stay in sync.
+	 *
+	 * Body type and transmission are normalised to Helix's expected values.
+	 * engine-cc is parsed from the descriptive engine string (e.g. '2.8L').
+	 * certified-used is driven by the $digicars_cpo_stocks array above.
+	 * --------------------------------------------------------------------- */
+	preg_match( '/^(\d+(?:\.\d+)?)L/i', $v['engine'], $cc_match );
+	$engine_cc = isset( $cc_match[1] ) ? (int) round( (float) $cc_match[1] * 1000 ) : 0;
+
+	$trans_raw        = strtolower( $v['transmission'] );
+	$trans_normalized = ( 'manual' === $trans_raw ) ? 'manual' : 'automatic';
+
+	static $body_helix_map = array(
+		'hatch'       => 'hatchback',
+		'double-cab'  => 'bakkie',
+		'single-cab'  => 'bakkie',
+		'mpv'         => 'minivan',
+		'minibus'     => 'minivan',
+		'convertible' => 'coupe',
+	);
+	$body_helix = isset( $body_helix_map[ $v['body'] ] ) ? $body_helix_map[ $v['body'] ] : $v['body'];
+
+	$certified_used = in_array( $stock_no, $digicars_cpo_stocks, true ) ? 'yes' : 'no';
+
+	digicars_set_product_pa_attributes( $product_id, array(
+		'make'            => (string) $v['make'],
+		'model'           => (string) $v['model'],
+		'year'            => (string) $v['year'],
+		'condition'       => (string) $v['condition'],
+		'mileage-km'      => (string) $v['mileage'],
+		'fuel-type'       => (string) $v['fuel'],
+		'transmission'    => $trans_normalized,
+		'body-type'       => $body_helix,
+		'colour'          => (string) $v['colour'],
+		'engine-cc'       => (string) $engine_cc,
+		'doors'           => (string) $v['doors'],
+		'safety-rating'   => (string) $v['safety_rating'],
+		'ncap-stars'      => (string) $v['safety_rating'],
+		'finance-from-zar' => (string) (int) $monthly,
+		'certified-used'  => $certified_used,
+	) );
 
 	/* ---- Featured flag (homepage best sellers). ----------------------- */
 	$is_featured = ! empty( $v['featured'] );
@@ -1405,7 +1585,10 @@ foreach ( $digicars_vehicles as $v ) {
 	/* ---- Thumbnail sideload (best-effort, never fatal). --------------- */
 	if ( ! has_post_thumbnail( $product_id ) && function_exists( 'get_theme_file_path' ) ) {
 		$candidates = array(
+			get_theme_file_path( 'images/vehicles/' . $v['body'] . '-render.jpg' ),
+			get_theme_file_path( 'images/vehicles/' . $v['body'] . '-render.png' ),
 			get_theme_file_path( 'images/vehicles/' . $v['body'] . '-render.svg' ),
+			get_theme_file_path( 'images/vehicles/_default.jpg' ),
 			get_theme_file_path( 'images/vehicles/_default.svg' ),
 		);
 		foreach ( $candidates as $img_path ) {

@@ -49,6 +49,9 @@ function __return_false() { return false; }
 function __return_true() { return true; }
 function __return_empty_array() { return array(); }
 
+/* Shortcode runner — returns empty in preview (Helix/plugins not loaded). */
+function do_shortcode( $content ) { return ''; }
+
 /* Enqueue / script no-ops (functions.php registers assets via wp_head/footer). */
 function wp_enqueue_style( ...$a ) {}
 function wp_enqueue_script( ...$a ) {}
@@ -436,7 +439,7 @@ function digicars_preview_seed() {
 				'_vehicle_model'        => 'Tiggo 7 Pro',
 				'_vehicle_variant'      => '1.5T Elite',
 				'_vehicle_year'         => 2026,
-				'_vehicle_body_type'    => 'SUV',
+				'_vehicle_body_type'    => 'suv',
 				'_vehicle_condition'    => 'New',
 				'_vehicle_price'        => 469900,
 				'_vehicle_monthly_from' => 7990,
@@ -461,7 +464,7 @@ function digicars_preview_seed() {
 				'_vehicle_model'        => 'Polo',
 				'_vehicle_variant'      => '1.0 TSI Life',
 				'_vehicle_year'         => 2025,
-				'_vehicle_body_type'    => 'Hatchback',
+				'_vehicle_body_type'    => 'hatch',
 				'_vehicle_condition'    => 'Demo',
 				'_vehicle_price'        => 379500,
 				'_vehicle_monthly_from' => 6490,
@@ -486,7 +489,7 @@ function digicars_preview_seed() {
 				'_vehicle_model'        => 'Ranger',
 				'_vehicle_variant'      => '2.0 BiT Wildtrak 4x4',
 				'_vehicle_year'         => 2022,
-				'_vehicle_body_type'    => 'Double Cab',
+				'_vehicle_body_type'    => 'double-cab',
 				'_vehicle_condition'    => 'Used',
 				'_vehicle_price'        => 689000,
 				'_vehicle_monthly_from' => 11750,
@@ -512,7 +515,7 @@ function digicars_preview_seed() {
 				'_vehicle_model'        => 'E5',
 				'_vehicle_variant'      => 'EV Elegance',
 				'_vehicle_year'         => 2026,
-				'_vehicle_body_type'    => 'SUV',
+				'_vehicle_body_type'    => 'suv',
 				'_vehicle_condition'    => 'New',
 				'_vehicle_price'        => 639900,
 				'_vehicle_monthly_from' => 10890,

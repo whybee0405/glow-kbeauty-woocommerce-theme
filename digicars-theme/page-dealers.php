@@ -101,7 +101,7 @@ $digicars_dealers = array(
 <?php /* 2. Dealer grid ---------------------------------------------------- */ ?>
 <section class="section section--flush-top">
 	<div class="container">
-		<div class="grid" style="--cols:3;">
+		<div class="grid dealer-card-grid" style="--cols:3;">
 			<?php foreach ( $digicars_dealers as $digicars_dealer ) : ?>
 				<?php
 				$digicars_maps_url  = 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode( $digicars_dealer['maps'] );
